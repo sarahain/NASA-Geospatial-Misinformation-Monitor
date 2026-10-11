@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+.env
+*.key
+firms_key.txt
+
+data/ner_results.csv
+data/verification_results.csv
+data/ner_evaluation.csv
+
+.DS_Store

@@ -1,0 +1,31 @@
+claim_id,text,date,expected_location,category
+1,Wildfire spreading near Malibu tonight,2025-01-07,"Malibu, California",wildfire
+2,Smoke is covering Los Angeles after the fire,2025-01-08,Los Angeles,smoke
+3,Residents are evacuating near Paradise California,2018-11-08,"Paradise, California",evacuation
+4,Large fire reported near Lahaina,2023-08-08,Lahaina,wildfire
+5,Wildfire activity reported across Northern California,2020-09-09,Northern California,wildfire
+6,Thick smoke blanketed Maui this morning,2023-08-09,"Maui, Hawaii",smoke
+7,Burned area now stretches for miles outside Paradise,2018-11-10,"Paradise, California",burned_area
+8,Evacuation orders issued for parts of Orange County,2020-10-26,Orange County,evacuation
+9,New York skyline turned orange from distant wildfire smoke,2023-06-07,New York,smoke
+10,Firefighters battling flames in the hills above Los Angeles,2025-01-08,Los Angeles,wildfire
+11,Entire town of Lahaina devastated by the blaze,2023-08-09,Lahaina,burned_area
+12,Smoke drifting south from Canada reached the Midwest,2023-06-27,Canada,smoke
+13,People fleeing their homes near Malibu as fire approaches,2025-01-07,"Malibu, California",evacuation
+14,Massive burn scar visible from space over Northern California,2020-09-15,Northern California,burned_area
+15,Air quality worsening in Los Angeles due to nearby fires,2025-01-09,Los Angeles,smoke
+16,Wildfire reported somewhere up north near the border,2023-06-05,Canada,wildfire
+17,Flames seen along the coast tonight,2025-01-07,"Malibu, California",wildfire
+18,Residents told to leave Maui immediately,2023-08-08,"Maui, Hawaii",evacuation
+19,Charred hillsides remain weeks after the Paradise fire,2018-12-01,"Paradise, California",burned_area
+20,Heavy smoke reported throughout Orange County neighborhoods,2020-10-27,Orange County,smoke
+21,Another brush fire ignited near the Malibu coastline,2025-01-10,"Malibu, California",wildfire
+22,Downtown looks apocalyptic as smoke settles in,2023-06-07,New York,smoke
+23,Fire crews responding to a blaze outside Lahaina,2023-08-10,Lahaina,wildfire
+24,Thousands evacuated across Northern California counties,2020-09-10,Northern California,evacuation
+25,Wildfire smoke reaching all the way to New York City,2023-06-08,New York,smoke
+26,Fast moving fire forces evacuations in the canyon,2025-01-08,"Malibu, California",evacuation
+27,Burned homes line the streets of Lahaina,2023-08-12,Lahaina,burned_area
+28,Dense smoke reduces visibility across Los Angeles freeways,2025-01-09,Los Angeles,smoke
+29,A wildfire has broken out in the mountains,2020-09-09,Northern California,wildfire
+30,Smoke from Canadian wildfires blankets the East Coast,2023-06-29,Canada,smoke
