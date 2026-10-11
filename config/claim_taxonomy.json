@@ -1,0 +1,47 @@
+{
+  "_note": "Multi-hazard taxonomy for environmental misinformation claims. Only 'wildfire' has a working satellite verification pipeline in Week 2. All other categories are planned research extensions and are NOT yet verifiable.",
+  "categories": {
+    "wildfire": {
+      "status": "implemented",
+      "keywords": ["wildfire", "fire", "flames", "blaze", "burning", "burn scar", "brush fire"],
+      "example_hashtags": ["#wildfire", "#firewatch", "#calfire"],
+      "possible_evidence_sources": ["NASA FIRMS active fire detections"],
+      "relevant_nasa_products": ["VIIRS NOAA-20 (VNP14IMG)", "VIIRS NOAA-21", "MODIS (MOD14/MYD14)"]
+    },
+    "smoke": {
+      "status": "partial",
+      "keywords": ["smoke", "haze", "air quality", "smoky", "ash"],
+      "example_hashtags": ["#smoke", "#airquality"],
+      "possible_evidence_sources": ["derived from wildfire detections (proximity proxy)"],
+      "relevant_nasa_products": ["VIIRS Aerosol", "MODIS Aerosol Optical Depth"]
+    },
+    "flood": {
+      "status": "planned",
+      "keywords": ["flood", "flooding", "inundation", "overflow", "levee"],
+      "example_hashtags": ["#flood", "#flooding"],
+      "possible_evidence_sources": ["flood extent / surface water products"],
+      "relevant_nasa_products": ["MODIS NRT Global Flood Mapping", "SRTM elevation"]
+    },
+    "drought": {
+      "status": "planned",
+      "keywords": ["drought", "dry spell", "water shortage", "reservoir low"],
+      "example_hashtags": ["#drought"],
+      "possible_evidence_sources": ["soil moisture / vegetation stress indices"],
+      "relevant_nasa_products": ["SMAP soil moisture", "MODIS NDVI/EVI", "GRACE groundwater"]
+    },
+    "air_quality": {
+      "status": "planned",
+      "keywords": ["pollution", "smog", "aqi", "particulate", "emissions"],
+      "example_hashtags": ["#airquality", "#pollution"],
+      "possible_evidence_sources": ["aerosol / trace gas column products"],
+      "relevant_nasa_products": ["MODIS AOD", "OMI NO2", "TROPOMI (ESA, NASA-distributed)"]
+    },
+    "deforestation": {
+      "status": "planned",
+      "keywords": ["deforestation", "logging", "clearcut", "forest loss"],
+      "example_hashtags": ["#deforestation"],
+      "possible_evidence_sources": ["forest cover change products"],
+      "relevant_nasa_products": ["Landsat", "MODIS VCF", "GEDI canopy structure"]
+    }
+  }
+}

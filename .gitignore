@@ -13,5 +13,8 @@ data/ner_results.csv
 data/verification_results.csv
 data/ner_evaluation.csv
 data/sensor_comparison.csv
+data/location_evaluation.csv
+data/evidence_records.csv
+data/research_metrics.csv
 
 .DS_Store

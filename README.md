@@ -1,78 +1,172 @@
 # NASA GLOBE-Based Geospatial Misinformation Monitor
 
+An undergraduate research prototype that investigates whether location-based
+environmental claims can be checked against real NASA Earth observations,
+rather than being judged by text alone.
+
 ## Project Overview
 
 Most misinformation classifiers rely heavily on language. They learn to spot
 suspicious wording, tone, or source patterns, but they rarely check a claim
-against the physical world. This project explores a different angle: whether
-location-based environmental claims can be grounded against real Earth
-observations instead of being judged by text alone.
+against the physical world. This project explores a different approach:
+grounding location-tagged environmental claims in satellite observations.
 
-The current prototype focuses on wildfire claims. A claim such as *"Wildfire
-spreading near Malibu tonight"* mentions a place and an event. We extract the
-place, turn it into coordinates, and ask NASA FIRMS whether satellites actually
-detected active fires near that location around that date.
+The Week 2 prototype focuses on wildfire claims. A claim such as *"Wildfire
+spreading near Malibu tonight"* names a place and an event. The pipeline
+extracts the place, converts it to coordinates, and asks NASA FIRMS whether
+satellites actually detected active fires near that location around that date.
 
-### Problem
+## Problem
 
 Language-only misinformation detection can be fooled by well-written false
-claims and can misfire on poorly-written true ones. Environmental claims are a
+claims and can misfire on poorly written true ones. Environmental claims are a
 useful testbed because they often make checkable physical assertions ("there is
-a fire here, now") that can be compared against satellite observations.
+a fire here, now") that can be compared against satellite observations. The open
+question is how far that grounding can actually be pushed with off-the-shelf NLP
+and public NASA data.
 
-### Week 2 Objective
+## Research Significance
 
-Build a baseline pipeline for extracting geographic entities from wildfire
-claims and connecting them with NASA FIRMS satellite fire observations.
+If even a coarse spatial-temporal check against satellite data can add useful
+evidence to a text claim, it suggests a path toward verification systems that
+are harder to fool with fluent language and that produce transparent,
+inspectable evidence instead of an opaque score. It also surfaces the limits:
+where geocoding fails, where satellites simply do not observe, and where absence
+of evidence must not be mistaken for disproof.
 
-## Pipeline
+## Research Questions
+
+- **RQ1:** How accurately can a general-purpose NER model extract geographic
+  entities from location-based environmental claims?
+- **RQ2:** Does geocoding and contextual location resolution improve geographic
+  entity accuracy over baseline spaCy NER?
+- **RQ3:** Can satellite fire detections provide useful external evidence for
+  verifying location-tagged wildfire claims?
+- **RQ4:** How sensitive are verification results to spatial and temporal
+  matching thresholds?
+- **RQ5:** What limitations arise when satellite observations are used as
+  evidence for misinformation adjudication?
+
+## Current Pipeline
 
 ```
 Claim
-  -> spaCy NER (extract geographic entity)
-  -> Geocoding (OpenStreetMap / Nominatim)
-  -> Coordinates
-  -> NASA FIRMS (VIIRS active fire detections)
-  -> Spatial / temporal comparison (Haversine distance + date window)
-  -> Evidence result (SUPPORTED / NO_MATCH / INSUFFICIENT_EVIDENCE)
+  -> spaCy NER (baseline geographic entity)
+  -> Location resolution (geocoder candidates + contextual ranking)
+  -> Reverse geocoding / coordinates (Nominatim)
+  -> NASA FIRMS (VIIRS NOAA-20 by default; MODIS / NOAA-21 compared separately)
+  -> Spatial-temporal comparison (Haversine distance + date window)
+  -> Transparent evidence score
+  -> Verdict (SUPPORTED / INSUFFICIENT_EVIDENCE / LOCATION_AMBIGUOUS)
 ```
 
-A verdict of `NO_MATCH` does **not** mean a claim is fake. The absence of a
-satellite detection is not proof of misinformation; it only means the current
-evidence source did not support the claim. This distinction matters for the
-research framing.
+A verdict other than `SUPPORTED` does **not** mean a claim is fake. The absence
+of a satellite detection is not proof of misinformation; it only means the
+current evidence source did not support the claim. `CONTRADICTED` is defined in
+the verdict set but is intentionally not emitted by the current conservative
+logic.
+
+## Week 2 Progress
+
+- Synthetic wildfire claim corpus (~30 claims).
+- Baseline spaCy NER with a simple quality evaluation.
+- Second-stage location resolution kept **separate** from the baseline so the
+  two can be compared.
+- Nominatim geocoding with caching and rate limiting.
+- NASA FIRMS integration (VIIRS NOAA-20) plus a MODIS vs VIIRS comparison.
+- Transparent evidence score and structured evidence records.
+- Threshold sensitivity experiment.
+- Research-metrics summary, an architecture document, and one wildfire case
+  study.
+- Optional PostGIS schema and example spatial queries (not yet wired into the
+  live pipeline).
 
 ## Dataset
 
 `data/wildfire_claims.csv` contains ~30 **synthetic / demo** wildfire-related
-claims created for testing the pipeline. These are **not** real social media
-posts and are not assertions about real events. They mix easy geographic cases
-(e.g. "Malibu, California") with intentionally ambiguous ones (e.g. "near the
-border", "in the mountains") to stress-test the NER step.
+claims written for this project. They are **not** real social media posts and
+are not assertions about real events. They mix easy geographic cases (e.g.
+"Malibu, California") with intentionally ambiguous ones (e.g. "near the border",
+"in the mountains") to stress-test the NER and resolution steps.
 
-Columns: `claim_id`, `text`, `date`, `expected_location`, `category`
-(categories: `wildfire`, `smoke`, `evacuation`, `burned_area`).
+Columns: `claim_id`, `text`, `date`, `expected_location`, `category`.
 
-## Repository Structure
+## Methods
 
-```
-NASA-Geospatial-Misinformation-Monitor/
-    README.md
-    requirements.txt
-    .gitignore
-    data/
-        wildfire_claims.csv          # synthetic demo claims (input)
-        ner_results.csv              # generated
-        verification_results.csv     # generated
-    src/
-        ner.py        # spaCy NER + simple match evaluation
-        geocode.py    # geopy / Nominatim geocoding with in-memory cache
-        firms.py      # NASA FIRMS Area API client
-        verify.py     # Haversine distance + verdict logic
-        main.py       # end-to-end pipeline
-    notebooks/
-        week2_demo.ipynb
-```
+- **NER:** spaCy `en_core_web_sm`, entity labels GPE / LOC / FAC. Evaluation
+  labels each extraction `correct` / `partial` / `incorrect` / `missing` by
+  normalized string comparison against an expected location.
+- **Location resolution** (`src/location_resolution.py`): spaCy candidate +
+  multiple geocoder candidates + light contextual ranking (boosts candidates
+  whose region tokens also appear in the claim). Returns a confidence and
+  candidate count; low confidence is treated as `LOCATION_AMBIGUOUS` downstream.
+- **Evidence score** (`src/evidence.py`): a transparent weighted sum of a
+  spatial score, temporal score, detection-strength score, and location
+  confidence, in `[0, 1]`. It is a prototype *confidence* score, not a measure
+  of scientific certainty. The exact formula is documented in the module.
+- **Verification** (`src/verify.py`): Haversine distance with a configurable
+  threshold (default 25 km).
+
+## NASA Data Sources
+
+- **NASA FIRMS** active fire / thermal anomaly detections (near-real-time Area
+  API). VIIRS NOAA-20 is the default; VIIRS NOAA-21 and MODIS are compared in
+  `src/sensor_comparison.py`. VIIRS senses at ~375 m, MODIS at ~1 km.
+- NRT products cover roughly the last two months; historical events require the
+  FIRMS archive (future work).
+
+## Experiments
+
+1. **NER quality** (`src/evaluate.py` -> `data/ner_evaluation.csv`): baseline
+   extraction accuracy by outcome category.
+2. **Location resolution A/B/C** (`src/location_experiment.py` ->
+   `data/location_evaluation.csv`): baseline spaCy vs spaCy+Nominatim vs
+   contextual resolver.
+3. **MODIS vs VIIRS** (`src/sensor_comparison.py`): detections, nearest
+   detection, FRP, and date coverage per sensor for one case.
+4. **Threshold sensitivity** (`src/threshold_experiment.py`): match counts at
+   5 / 10 / 25 / 50 km.
+5. **Research metrics** (`src/research_metrics.py` ->
+   `data/research_metrics.csv`): aggregate rates across the corpus.
+
+## Preliminary Results
+
+These are early, small-sample numbers from the synthetic corpus and will change
+as the dataset grows. They are reported as-is, including a negative result.
+
+- Baseline NER: ~53% exact, ~23% partial, ~20% missing, ~3% incorrect;
+  extraction rate ~80%.
+- Location resolution **did not** beat the baseline on exact string match
+  (~43% vs ~53%): geocoding sometimes resolves ambiguous names confidently to
+  the wrong place, and the contextual resolver did not improve on plain
+  geocoding for this set. This is kept as an honest negative result.
+- About 10% of claims were flagged `LOCATION_AMBIGUOUS` by the resolver.
+- Satellite match rate on the synthetic claims is 0%, because their dates fall
+  outside the FIRMS NRT window. On recent real California fire data, the
+  threshold experiment shows match counts growing with the radius (e.g. a
+  handful within 5 km rising to more within 50 km), illustrating that threshold
+  choice is a research design decision rather than a fixed constant.
+
+## Limitations
+
+- The claim corpus is synthetic and small.
+- NRT-only FIRMS retrieval; historical dates return nothing without the archive.
+- Geocoding yields a single representative point, not a fire perimeter, and can
+  mis-resolve ambiguous names.
+- Absence of a detection never establishes that a claim is false.
+- The evidence score is a transparent heuristic, not a validated model.
+- PostGIS and LLM-based classification are not yet implemented.
+
+## Future Work
+
+- Load data into PostGIS and run the spatial queries from the live pipeline.
+- NASA GLOBE citizen-science observations as an additional evidence layer.
+- Larger, real and properly sourced claim corpora.
+- Improved geographic entity resolution for ambiguous / informal place names.
+- LLM-assisted contextual disambiguation and classification.
+- FIRMS archive retrieval for historical events.
+- Verification pipelines for the other taxonomy categories (flood, drought, air
+  quality, deforestation).
 
 ## Setup
 
@@ -96,39 +190,41 @@ steps and reports FIRMS verification as skipped.
 
 ## Running
 
-From the project root:
-
 ```bash
-python src/main.py
+python src/main.py                 # NER -> geocode -> FIRMS -> verify
+python src/evaluate.py             # NER quality evaluation
+python src/location_experiment.py  # baseline vs resolved location
+python src/sensor_comparison.py    # MODIS vs VIIRS
+python src/evidence.py             # structured evidence records + score
+python src/research_metrics.py     # aggregate research metrics
 ```
 
-This loads the claims, runs NER, geocodes locations, optionally queries FIRMS,
-runs verification, writes `data/verification_results.csv`, and prints a summary.
+The optional PostGIS schema and queries live in `database/`.
 
-## Week 2 Deliverables
+## Repository Structure
 
-- Initial wildfire claim corpus (synthetic)
-- Baseline spaCy NER for geographic entity extraction
-- Simple NER quality evaluation (correct / partial / incorrect / missing)
-- Geocoding pipeline (Nominatim) with caching and rate limiting
-- NASA FIRMS connection (VIIRS active fire detections)
-- First evidence-based verification prototype (spatial + temporal comparison)
+```
+NASA-Geospatial-Misinformation-Monitor/
+    README.md
+    requirements.txt
+    config/claim_taxonomy.json
+    database/            schema.sql, queries.sql   (optional PostGIS)
+    docs/architecture.md
+    case_studies/wildfire_case_study.md
+    data/                wildfire_claims.csv (input) + generated CSVs
+    src/                 ner, geocode, firms, verify, location_resolution,
+                         location_experiment, evidence, sensor_comparison,
+                         threshold_experiment, research_metrics, main
+    notebooks/week2_demo.ipynb
+```
 
 ## Background and Influences
 
-- **LIAR-PLUS** and **HealthVer** influenced the evidence-verification
-  framing used here, where a claim is paired with supporting/contradicting
-  evidence rather than classified from text alone.
+- **LIAR-PLUS** and **HealthVer** influenced the evidence-verification framing,
+  where a claim is paired with supporting evidence rather than classified from
+  text alone.
 - **NASA FIRMS** provides MODIS/VIIRS active fire observations used as the
   physical evidence source.
-
-## Future Work
-
-- PostGIS for spatial storage and querying
-- NASA GLOBE citizen-science observations as an additional evidence layer
-- Larger, real-world claim corpora
-- Improved geographic entity resolution (ambiguous and informal place names)
-- LLM-assisted contextual disambiguation of locations
 
 ## References
 

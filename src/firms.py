@@ -33,13 +33,12 @@ def build_bbox(lat, lon):
     return f"{west},{south},{east},{north}"
 
 
-def fetch_detections(lat, lon, date, map_key=None, source=SOURCE):
+def fetch_area(bbox, date, map_key=None, source=SOURCE, day_range=DAY_RANGE):
     map_key = map_key or get_map_key()
     if not map_key:
         return None
 
-    bbox = build_bbox(lat, lon)
-    url = f"{API_BASE}/{map_key}/{source}/{bbox}/{DAY_RANGE}/{date}"
+    url = f"{API_BASE}/{map_key}/{source}/{bbox}/{day_range}/{date}"
 
     try:
         response = requests.get(url, timeout=30)
@@ -52,6 +51,10 @@ def fetch_detections(lat, lon, date, map_key=None, source=SOURCE):
     for row in reader:
         detections.append({field: row.get(field, "") for field in FIELDS})
     return detections
+
+
+def fetch_detections(lat, lon, date, map_key=None, source=SOURCE):
+    return fetch_area(build_bbox(lat, lon), date, map_key=map_key, source=source)
 
 
 if __name__ == "__main__":

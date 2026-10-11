@@ -7,6 +7,35 @@ REQUEST_DELAY = 1.0
 
 _geolocator = Nominatim(user_agent=USER_AGENT)
 _cache = {}
+_candidate_cache = {}
+
+
+def geocode_candidates(location, limit=5):
+    if not location:
+        return []
+
+    if location in _candidate_cache:
+        return _candidate_cache[location]
+
+    try:
+        results = _geolocator.geocode(location, exactly_one=False, limit=limit, addressdetails=True)
+        time.sleep(REQUEST_DELAY)
+    except Exception:
+        results = None
+
+    candidates = []
+    for r in results or []:
+        candidates.append(
+            {
+                "latitude": r.latitude,
+                "longitude": r.longitude,
+                "display_name": r.address,
+                "importance": float(r.raw.get("importance", 0.0)),
+                "type": r.raw.get("type", ""),
+            }
+        )
+    _candidate_cache[location] = candidates
+    return candidates
 
 
 def geocode(location):

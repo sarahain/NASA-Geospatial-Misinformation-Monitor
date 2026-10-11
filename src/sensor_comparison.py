@@ -16,7 +16,7 @@ SENSORS = [
 
 
 def _summarize(lat, lon, detections):
-    distances, frps = [], []
+    distances, frps, dates = [], [], []
     for d in detections:
         try:
             distances.append(verify.haversine(lat, lon, float(d["latitude"]), float(d["longitude"])))
@@ -26,9 +26,12 @@ def _summarize(lat, lon, detections):
             frps.append(float(d["frp"]))
         except (ValueError, KeyError):
             pass
+        if d.get("acq_date"):
+            dates.append(d["acq_date"])
     nearest = round(min(distances), 2) if distances else None
     avg_frp = round(sum(frps) / len(frps), 2) if frps else None
-    return nearest, avg_frp
+    date_coverage = f"{min(dates)} to {max(dates)}" if dates else None
+    return nearest, avg_frp, date_coverage
 
 
 def compare_sensors(lat, lon, date, output_path=OUTPUT_PATH):
@@ -36,11 +39,11 @@ def compare_sensors(lat, lon, date, output_path=OUTPUT_PATH):
     for s in SENSORS:
         detections = firms.fetch_detections(lat, lon, date, source=s["source"])
         if detections is None:
-            nearest = avg_frp = None
+            nearest = avg_frp = date_coverage = None
             found = None
         else:
             found = len(detections)
-            nearest, avg_frp = _summarize(lat, lon, detections)
+            nearest, avg_frp, date_coverage = _summarize(lat, lon, detections)
         rows.append(
             {
                 "sensor": s["sensor"],
@@ -48,6 +51,7 @@ def compare_sensors(lat, lon, date, output_path=OUTPUT_PATH):
                 "detections_found": found,
                 "nearest_detection_km": nearest,
                 "average_frp": avg_frp,
+                "date_coverage": date_coverage,
             }
         )
 
