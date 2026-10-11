@@ -12,5 +12,6 @@ firms_key.txt
 data/ner_results.csv
 data/verification_results.csv
 data/ner_evaluation.csv
+data/sensor_comparison.csv
 
 .DS_Store
