@@ -1,0 +1,101 @@
+claim_id,text,category,expected_location,expected_normalized_location,difficulty,source_type
+1,Wildfire spreading through the hills near Malibu tonight,wildfire,Malibu,"Malibu, California",easy,synthetic
+2,Firefighters are battling a fast-moving blaze in Los Angeles,wildfire,Los Angeles,"Los Angeles, California",easy,synthetic
+3,Huge fire just broke out in LA and the sky is orange,wildfire,LA,"Los Angeles, California",medium,synthetic
+4,The whole town of Paradise is burning again,wildfire,Paradise,"Paradise, California",hard,synthetic
+5,Entire community of Lahaina destroyed by wildfire,wildfire,Lahaina,"Lahaina, Hawaii",easy,synthetic
+6,Smoke from the fires is covering all of Maui,wildfire,Maui,"Maui, Hawaii",easy,synthetic
+7,Wildfires are tearing across Northern California again,wildfire,Northern California,"Northern California, United States",hard,synthetic
+8,Evacuations ordered in Orange County as flames approach,wildfire,Orange County,"Orange County, California",medium,synthetic
+9,A massive wildfire is burning somewhere in the Pacific Northwest,wildfire,Pacific Northwest,"Pacific Northwest, United States",hard,synthetic
+10,Brush fire reported near San Diego County border,wildfire,San Diego County,"San Diego County, California",medium,synthetic
+11,Flames spreading fast across the canyon north of the city,wildfire,,,hard,synthetic
+12,Smoke from the wildfire near Malibu is reaching Los Angeles,wildfire,Malibu; Los Angeles,"Malibu, California",hard,synthetic
+13,Wildfire smoke from Canada is drifting into New York City,wildfire,Canada; New York City,"Canada",hard,synthetic
+14,Yellowstone is on fire according to posts online,wildfire,Yellowstone,"Yellowstone National Park, United States",medium,synthetic
+15,Quebec wildfires are sending smoke all the way south,wildfire,Quebec,"Quebec, Canada",medium,synthetic
+16,Wildfire burning out of control near Phoenix,wildfire,Phoenix,"Phoenix, Arizona",easy,synthetic
+17,Crews fighting a wildfire in Washington State,wildfire,Washington State,"Washington, United States",medium,synthetic
+18,They say a fire started up north near the border,wildfire,Canada,"Canada",hard,synthetic
+19,Wildfire threatens homes across San Diego County tonight,wildfire,San Diego County,"San Diego County, California",medium,synthetic
+20,Another fire ignited along the Malibu coastline this afternoon,wildfire,Malibu,"Malibu, California",easy,synthetic
+21,Huge blaze reported in the mountains above LA,wildfire,LA,"Los Angeles, California",medium,synthetic
+22,Fire crews responding to flames outside Paradise CA,wildfire,Paradise,"Paradise, California",medium,synthetic
+23,Wildfire smoke turning the sky orange over NYC,wildfire,NYC,"New York, New York",medium,synthetic
+24,Massive wildfire burning in the hills,wildfire,,,hard,synthetic
+25,Thousands evacuated as wildfire spreads through Northern California counties,wildfire,Northern California,"Northern California, United States",hard,synthetic
+26,Wildfire near Yellowstone forces trail closures,wildfire,Yellowstone,"Yellowstone National Park, United States",medium,synthetic
+27,Fire reported near the Oregon-California state line,wildfire,Oregon,"Oregon, United States",hard,synthetic
+28,Flames visible from downtown Phoenix tonight,wildfire,Phoenix,"Phoenix, Arizona",easy,synthetic
+29,Wildfire scorching land across Washington,wildfire,Washington,"Washington, United States",hard,synthetic
+30,Smoke so thick in LA you cannot see the hills,wildfire,LA,"Los Angeles, California",medium,synthetic
+31,Evacuation orders issued for parts of San Diego County,wildfire,San Diego County,"San Diego County, California",medium,synthetic
+32,A wildfire is burning near Lake Tahoe on the border,wildfire,Lake Tahoe,"Lake Tahoe, United States",hard,synthetic
+33,Wildfires rage on both sides near the Quebec border,wildfire,Quebec,"Quebec, Canada",hard,synthetic
+34,Fire approaching neighborhoods in Orange County,wildfire,Orange County,"Orange County, California",medium,synthetic
+35,Entire ridgeline is on fire somewhere out west,wildfire,,,hard,synthetic
+36,Major flooding reported across Houston after the storm,flood,Houston,"Houston, Texas",easy,synthetic
+37,Streets completely underwater in Miami this morning,flood,Miami,"Miami, Florida",easy,synthetic
+38,Flash flooding hitting South Florida right now,flood,South Florida,"South Florida, United States",hard,synthetic
+39,The Mississippi River is flooding towns all along it,flood,Mississippi River,"Mississippi River, United States",hard,synthetic
+40,Severe floods devastating parts of New Jersey,flood,New Jersey,"New Jersey, United States",medium,synthetic
+41,Heavy flooding reported in NJ after record rainfall,flood,NJ,"New Jersey, United States",medium,synthetic
+42,Flooding has shut down roads across New York City,flood,New York City,"New York, New York",easy,synthetic
+43,Water rising fast in downtown after the levee broke,flood,,,hard,synthetic
+44,Catastrophic flooding across the entire Gulf Coast,flood,Gulf Coast,"Gulf Coast, United States",hard,synthetic
+45,Flooding reported in Washington near the river,flood,Washington,"Washington, United States",hard,synthetic
+46,Homes submerged by floodwaters in Louisiana,flood,Louisiana,"Louisiana, United States",medium,synthetic
+47,Flash flood warning issued for San Diego County,flood,San Diego County,"San Diego County, California",medium,synthetic
+48,Floodwaters swallowing streets in New Orleans,flood,New Orleans,"New Orleans, Louisiana",easy,synthetic
+49,Massive flooding near Phoenix after monsoon rains,flood,Phoenix,"Phoenix, Arizona",medium,synthetic
+50,Record floods submerging parts of Quebec,flood,Quebec,"Quebec, Canada",medium,synthetic
+51,The river overflowed and the whole valley is flooded,flood,,,hard,synthetic
+52,Flooding in Miami and Fort Lauderdale is getting worse,flood,Miami; Fort Lauderdale,"Miami, Florida",hard,synthetic
+53,Severe drought is drying up reservoirs across California,drought,California,"California, United States",medium,synthetic
+54,Lake Mead hitting record lows amid the drought,drought,Lake Mead,"Lake Mead, United States",medium,synthetic
+55,Extreme drought gripping the entire Southwest,drought,Southwest,"Southwestern United States",hard,synthetic
+56,Farmers struggling as drought spreads through Texas,drought,Texas,"Texas, United States",easy,synthetic
+57,Drought conditions worsening across Arizona,drought,Arizona,"Arizona, United States",easy,synthetic
+58,The Colorado River is drying up from the drought,drought,Colorado River,"Colorado River, United States",hard,synthetic
+59,Water restrictions as drought hits LA County,drought,LA County,"Los Angeles County, California",medium,synthetic
+60,Severe drought reported across the Central Valley,drought,Central Valley,"Central Valley, California",hard,synthetic
+61,Reservoirs nearly empty after years of drought,drought,,,hard,synthetic
+62,Drought is devastating crops in the Midwest,drought,Midwest,"Midwestern United States",hard,synthetic
+63,Prolonged drought drying out Northern California,drought,Northern California,"Northern California, United States",hard,synthetic
+64,Historic drought conditions across New Mexico,drought,New Mexico,"New Mexico, United States",easy,synthetic
+65,Drought emptying wells across San Diego County,drought,San Diego County,"San Diego County, California",medium,synthetic
+66,Everything is bone dry out west this year,drought,,,hard,synthetic
+67,Air quality is hazardous in Los Angeles today,air_quality,Los Angeles,"Los Angeles, California",easy,synthetic
+68,The AQI in NYC is off the charts right now,air_quality,NYC,"New York, New York",medium,synthetic
+69,Thick smog settling over the LA basin,air_quality,LA,"Los Angeles, California",medium,synthetic
+70,Air pollution reaching dangerous levels in Phoenix,air_quality,Phoenix,"Phoenix, Arizona",easy,synthetic
+71,Hazy skies and poor air quality across New Jersey,air_quality,New Jersey,"New Jersey, United States",medium,synthetic
+72,Smoke pushing air quality into the red over Seattle,air_quality,Seattle,"Seattle, Washington",easy,synthetic
+73,Air quality alert issued for the entire Bay Area,air_quality,Bay Area,"San Francisco Bay Area, California",hard,synthetic
+74,Pollution so bad you can taste it in the air downtown,air_quality,,,hard,synthetic
+75,Unhealthy air quality blanketing South Florida,air_quality,South Florida,"South Florida, United States",hard,synthetic
+76,Smog warning for Washington commuters this morning,air_quality,Washington,"Washington, United States",hard,synthetic
+77,Air quality dropping fast across Northern California,air_quality,Northern California,"Northern California, United States",hard,synthetic
+78,Dangerous air quality reported in San Diego County,air_quality,San Diego County,"San Diego County, California",medium,synthetic
+79,Wildfire smoke tanked the air quality in NYC and Philadelphia,air_quality,NYC; Philadelphia,"New York, New York",hard,synthetic
+80,Air feels thick and smoky everywhere today,air_quality,,,hard,synthetic
+81,Massive deforestation happening in the Amazon rainforest,deforestation,Amazon,"Amazon Rainforest, Brazil",medium,synthetic
+82,Illegal logging clearing forests across Brazil,deforestation,Brazil,"Brazil",easy,synthetic
+83,Satellite images show forest loss in the Congo Basin,deforestation,Congo Basin,"Congo Basin, Africa",hard,synthetic
+84,Clearcutting destroying old growth in the Pacific Northwest,deforestation,Pacific Northwest,"Pacific Northwest, United States",hard,synthetic
+85,Rainforest being cleared at alarming rates in Indonesia,deforestation,Indonesia,"Indonesia",easy,synthetic
+86,Deforestation spreading across the state of Rondonia,deforestation,Rondonia,"Rondonia, Brazil",hard,synthetic
+87,Forests are being wiped out somewhere in the tropics,deforestation,,,hard,synthetic
+88,Logging roads cutting deep into the Amazon basin,deforestation,Amazon,"Amazon Rainforest, Brazil",medium,synthetic
+89,Forest cover vanishing across parts of California,deforestation,California,"California, United States",medium,synthetic
+90,Deforestation accelerating in the Brazilian Amazon,deforestation,Brazilian Amazon,"Amazon Rainforest, Brazil",medium,synthetic
+91,Trees being cleared across Washington State forests,deforestation,Washington State,"Washington, United States",medium,synthetic
+92,Huge swaths of forest gone near the Oregon coast,deforestation,Oregon,"Oregon, United States",medium,synthetic
+93,They are tearing down the forest just outside town,deforestation,,,hard,synthetic
+94,Deforestation reported in both Brazil and Peru,deforestation,Brazil; Peru,"Brazil",hard,synthetic
+95,Wildfire forcing evacuations near the Malibu canyons,wildfire,Malibu,"Malibu, California",easy,synthetic
+96,Flooding and mudslides reported across LA County,flood,LA County,"Los Angeles County, California",medium,synthetic
+97,Drought pushing water levels dangerously low in Lake Mead,drought,Lake Mead,"Lake Mead, United States",medium,synthetic
+98,Air quality warnings issued for Washington State residents,air_quality,Washington State,"Washington, United States",medium,synthetic
+99,Deforestation threatening habitats in the Amazon,deforestation,Amazon,"Amazon Rainforest, Brazil",medium,synthetic
+100,Wildfire smoke drifting from Quebec all the way to New York,wildfire,Quebec; New York,"Quebec, Canada",hard,synthetic
