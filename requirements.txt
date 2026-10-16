@@ -4,3 +4,10 @@ geopy
 requests
 jupyter
 matplotlib
+pytest
+
+# Optional (Week 3 Method B: transformer NER, dslim/bert-base-NER).
+# The project runs fine without these; the evaluation records that Method B is
+# unavailable instead of fabricating transformer results.
+torch
+transformers

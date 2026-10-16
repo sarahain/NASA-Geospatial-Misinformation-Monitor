@@ -47,6 +47,18 @@ of evidence must not be mistaken for disproof.
 - **RQ5:** What limitations arise when satellite observations are used as
   evidence for misinformation adjudication?
 
+### Week 3 Research Sub-Questions (geographic extraction)
+
+- **W3-RQ1:** How accurately does baseline spaCy identify geographic entities in
+  short environmental claims?
+- **W3-RQ2:** Does a specialized or alternative NER method outperform
+  general-purpose spaCy?
+- **W3-RQ3:** How much does geographic resolution improve the final location
+  accuracy after NER?
+- **W3-RQ4:** Which types of geographic expressions cause the most errors?
+- **W3-RQ5:** How does performance change between easy, medium, and difficult
+  claims?
+
 ## Current Pipeline
 
 ```
@@ -80,6 +92,88 @@ logic.
   study.
 - Optional PostGIS schema and example spatial queries (not yet wired into the
   live pipeline).
+
+## Week 3 — Geographic Entity Extraction Evaluation
+
+Week 3 isolates and stress-tests the weakest-evaluated step of the pipeline:
+**turning claim text into a geographic location.** It extends the project
+cleanly without rebuilding any Week 1/2 component.
+
+What was done:
+
+- **100 synthetic claims were evaluated** (`data/week3_location_test.csv`) across
+  five hazard categories (wildfire, flood, drought, air quality, deforestation),
+  labelled by `difficulty` (easy / medium / hard) and including abbreviations,
+  regions, ambiguous names, multiple-location claims, and claims with no location.
+- **spaCy was preserved as the baseline** (Method A, `en_core_web_sm`,
+  unchanged). Its outputs are recorded as-is.
+- **A second extraction method was evaluated** (Method B): the pretrained
+  transformer NER `dslim/bert-base-NER`, behind a shared interface
+  (`src/ner_methods.py`) that returns the same output format. This is a **model
+  comparison**, not fine-tuning; Method B is optional and degrades gracefully.
+- **Geographic resolution was applied** (`src/location_resolution.py`): a small
+  alias map (LA, NYC, NJ, …) → geocoder candidates → contextual ranking →
+  coordinates → `location_confidence` + `ambiguity_status`
+  (`resolved` / `ambiguous` / `unresolved`). Multiple-location claims keep all
+  detected locations, pick a `primary_location`, and record *why*.
+- **Nominatim is the primary geocoder; Google is an optional fallback**
+  (`GOOGLE_GEOCODING_API_KEY`, never hardcoded), used only when Nominatim is
+  unresolved/ambiguous and only if strictly more confident. Requests are cached
+  on disk (`data/geocode_cache.json`) to respect rate limits.
+- **Ambiguous locations are tracked, not hidden** — regions and ambiguous names
+  are flagged rather than silently resolved to a confident wrong point.
+- **Error analysis was performed** (`docs/week3_error_analysis.md`, ~15 worked
+  examples) and performance is broken down by difficulty.
+
+### Week 3 Results (100-claim synthetic set)
+
+Computed from the models as-is (see `src/week3_evaluation.py`); nothing was
+hand-corrected. 89 of the 100 claims contain a location; 11 contain none (for
+those, correctly extracting nothing is scored as an exact true-negative).
+
+| Method | Extraction | Exact | Partial | Incorrect | Missing | Geocoding success |
+|--------|-----------:|------:|--------:|----------:|--------:|------------------:|
+| A — spaCy baseline (NER only) | 80% | 85% | 6% | 0% | 9% | 79% |
+| B — transformer NER (NER only) | 88% | 94% | 5% | 0% | 1% | 88% |
+| C — spaCy + location resolution | 80% | 60% | 9% | 22% | 9% | 79% |
+
+Performance by difficulty (spaCy + resolution):
+
+| Difficulty | Claims | Exact match | Geocoding success |
+|------------|-------:|------------:|------------------:|
+| easy | 20 | 85.0% | 95.0% |
+| medium | 38 | 44.7% | 81.6% |
+| hard | 42 | 61.9% | 69.0% |
+
+Key takeaways:
+
+- **W3-RQ1/RQ2:** The transformer NER **outperforms the spaCy baseline** (94% vs
+  85% exact; 1% vs 9% `missing`), mainly by recovering abbreviations (`NJ`,
+  `NYC`) and less-common / non-US names (`Lahaina`, `Amazon`, `Washington
+  State`) that the small spaCy model drops.
+- **W3-RQ3:** Resolution makes claims *verifiable* (coordinates for most) but did
+  **not** raise exact string match (~55% located-only) and adds `incorrect`
+  resolutions for regions/ambiguous names — an honest negative result consistent
+  with Week 2. Geocoding ambiguity rate ≈17%, unresolved ≈21%.
+- **W3-RQ4:** Dominant error sources are abbreviations/rare names (NER recall)
+  and regions/ambiguous names (geocoder picking the wrong point, e.g. *Northern
+  California*, *Midwest*, *Southwest*).
+- **W3-RQ5:** Accuracy is highest on easy claims and degrades on harder,
+  abbreviated, and region-level claims.
+
+Five successfully resolved wildfire claims were passed through the **existing**
+NASA FIRMS pipeline (`src/week3_end_to_end.py` →
+`data/week3_end_to_end_examples.csv`) to confirm the improved extraction feeds
+the larger project. Synthetic claims have no real timestamp, so the current
+FIRMS NRT window is queried; no satellite match is fabricated.
+
+### Running Week 3
+
+```bash
+python src/week3_evaluation.py    # -> week3_spacy_baseline / geocoding / comparison / difficulty / metrics_summary CSVs
+python src/week3_end_to_end.py    # -> week3_end_to_end_examples.csv (uses FIRMS_MAP_KEY if set)
+jupyter notebook notebooks/week3_location_evaluation.ipynb
+```
 
 ## Dataset
 
@@ -211,11 +305,15 @@ NASA-Geospatial-Misinformation-Monitor/
     database/            schema.sql, queries.sql   (optional PostGIS)
     docs/architecture.md
     case_studies/wildfire_case_study.md
-    data/                wildfire_claims.csv (input) + generated CSVs
-    src/                 ner, geocode, firms, verify, location_resolution,
-                         location_experiment, evidence, sensor_comparison,
-                         threshold_experiment, research_metrics, main
-    notebooks/week2_demo.ipynb
+    data/                wildfire_claims.csv, week3_location_test.csv (inputs)
+                         + generated CSVs (incl. week3_*.csv)
+    src/                 ner, ner_methods, geocode, firms, verify,
+                         location_resolution, location_experiment, evidence,
+                         sensor_comparison, threshold_experiment,
+                         research_metrics, main,
+                         week3_evaluation, week3_end_to_end
+    docs/architecture.md, week3_error_analysis.md
+    notebooks/week2_demo.ipynb, week3_location_evaluation.ipynb
 ```
 
 ## Background and Influences
