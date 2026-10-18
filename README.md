@@ -101,10 +101,20 @@ cleanly without rebuilding any Week 1/2 component.
 
 What was done:
 
-- **100 synthetic claims were evaluated** (`data/week3_location_test.csv`) across
-  five hazard categories (wildfire, flood, drought, air quality, deforestation),
-  labelled by `difficulty` (easy / medium / hard) and including abbreviations,
-  regions, ambiguous names, multiple-location claims, and claims with no location.
+- **100 real tweets were evaluated** from the **HumAID** crisis dataset
+  (Alam, Ofli & Imran, 2021 — <https://crisisnlp.qcri.org/humaid_dataset>),
+  across four environmental-hazard events: Canada 2016 and Greece 2018
+  **wildfires** (52 claims) and Sri Lanka 2017 and Maryland 2018 **floods**
+  (48 claims). The claims are real and unmodified (only a leading `RT @user:`
+  and URLs stripped); they naturally include hashtag-embedded places, abbreviations,
+  nicknames, regions, multiple-location claims, and claims with no location.
+- **Research integrity / licensing:** HumAID's terms permit sharing **tweet IDs
+  only**, not tweet text. The committed `data/week3_location_test.csv` therefore
+  holds tweet IDs + our annotations (no text); the real text is rehydrated
+  locally by `src/week3_build_dataset.py` into a git-ignored file. The
+  `expected_location` labels are **our** ground truth; `difficulty` is **computed
+  objectively** from claim features (not hand-tuned). The previous labelled
+  synthetic set is preserved at `data/week3_location_test_synthetic.csv`.
 - **spaCy was preserved as the baseline** (Method A, `en_core_web_sm`,
   unchanged). Its outputs are recorded as-is.
 - **A second extraction method was evaluated** (Method B): the pretrained
@@ -112,64 +122,80 @@ What was done:
   (`src/ner_methods.py`) that returns the same output format. This is a **model
   comparison**, not fine-tuning; Method B is optional and degrades gracefully.
 - **Geographic resolution was applied** (`src/location_resolution.py`): a small
-  alias map (LA, NYC, NJ, …) → geocoder candidates → contextual ranking →
-  coordinates → `location_confidence` + `ambiguity_status`
-  (`resolved` / `ambiguous` / `unresolved`). Multiple-location claims keep all
-  detected locations, pick a `primary_location`, and record *why*.
+  alias map → geocoder candidates → contextual ranking → coordinates →
+  `location_confidence` + `ambiguity_status` (`resolved` / `ambiguous` /
+  `unresolved`). Multiple-location claims keep all detected locations, pick a
+  `primary_location`, and record *why*.
 - **Nominatim is the primary geocoder; Google is an optional fallback**
   (`GOOGLE_GEOCODING_API_KEY`, never hardcoded), used only when Nominatim is
   unresolved/ambiguous and only if strictly more confident. Requests are cached
   on disk (`data/geocode_cache.json`) to respect rate limits.
 - **Ambiguous locations are tracked, not hidden** — regions and ambiguous names
   are flagged rather than silently resolved to a confident wrong point.
-- **Error analysis was performed** (`docs/week3_error_analysis.md`, ~15 worked
+- **Error analysis was performed** (`docs/week3_error_analysis.md`, ~13 worked
   examples) and performance is broken down by difficulty.
 
-### Week 3 Results (100-claim synthetic set)
+### Week 3 Results (100 real HumAID tweets)
 
 Computed from the models as-is (see `src/week3_evaluation.py`); nothing was
-hand-corrected. 89 of the 100 claims contain a location; 11 contain none (for
+hand-corrected. 93 of the 100 claims contain a location; 7 contain none (for
 those, correctly extracting nothing is scored as an exact true-negative).
 
 | Method | Extraction | Exact | Partial | Incorrect | Missing | Geocoding success |
 |--------|-----------:|------:|--------:|----------:|--------:|------------------:|
-| A — spaCy baseline (NER only) | 80% | 85% | 6% | 0% | 9% | 79% |
-| B — transformer NER (NER only) | 88% | 94% | 5% | 0% | 1% | 88% |
-| C — spaCy + location resolution | 80% | 60% | 9% | 22% | 9% | 79% |
+| A — spaCy baseline (NER only) | 64% | 52% | 12% | 7% | 29% | 63% |
+| B — transformer NER (NER only) | 82% | 58% | 16% | 15% | 11% | 78% |
+| C — spaCy + location resolution | 64% | 37% | 12% | 22% | 29% | 63% |
 
-Performance by difficulty (spaCy + resolution):
+Methods A and B are scored on the raw NER span against the raw expected label;
+Method C outputs a *normalized* location and is therefore scored against both
+the raw and the `expected_normalized_location` label (a match against either
+counts). A/B/C exact rates are over all 100 claims (including the 7 correct
+no-location true-negatives); the located-only spaCy exact rate is ~48%.
+
+Performance by difficulty (spaCy + resolution; difficulty is computed from claim
+features — hashtag-only / abbreviation / region / multiple / no-location → hard):
 
 | Difficulty | Claims | Exact match | Geocoding success |
 |------------|-------:|------------:|------------------:|
-| easy | 20 | 85.0% | 95.0% |
-| medium | 38 | 44.7% | 81.6% |
-| hard | 42 | 61.9% | 69.0% |
+| easy | 45 | 55.6% | 80.0% |
+| medium | 8 | 0.0% | 87.5% |
+| hard | 47 | 25.5% | 42.6% |
+
+(The 8 `medium` claims are "City, State" cases where the resolver returns the
+city and drops the state, so they score `partial`, not `exact`.)
 
 Key takeaways:
 
-- **W3-RQ1/RQ2:** The transformer NER **outperforms the spaCy baseline** (94% vs
-  85% exact; 1% vs 9% `missing`), mainly by recovering abbreviations (`NJ`,
-  `NYC`) and less-common / non-US names (`Lahaina`, `Amazon`, `Washington
-  State`) that the small spaCy model drops.
-- **W3-RQ3:** Resolution makes claims *verifiable* (coordinates for most) but did
-  **not** raise exact string match (~55% located-only) and adds `incorrect`
-  resolutions for regions/ambiguous names — an honest negative result consistent
-  with Week 2. Geocoding ambiguity rate ≈17%, unresolved ≈21%.
-- **W3-RQ4:** Dominant error sources are abbreviations/rare names (NER recall)
-  and regions/ambiguous names (geocoder picking the wrong point, e.g. *Northern
-  California*, *Midwest*, *Southwest*).
-- **W3-RQ5:** Accuracy is highest on easy claims and degrades on harder,
-  abbreviated, and region-level claims.
+- **W3-RQ1/RQ2:** The transformer NER **extracts more** than the spaCy baseline
+  (82% vs 64% extraction; 11% vs 29% `missing`; 58% vs 52% exact), recovering
+  hashtag-embedded places, abbreviations and nicknames the small spaCy model
+  drops. **But on noisy real tweets it is also less precise** (15% vs 7%
+  `incorrect`) — so it is not unconditionally better, a nuance the real data
+  exposes that the synthetic set did not.
+- **W3-RQ3:** Resolution is the hardest step on real data: only 31% of located
+  claims geocode to a clearly correct place, 37% are unresolved, and some
+  `incorrect` scores are artifacts of localized display names (`Ελλάς`, `Norge`,
+  `Éire`). An honest, sobering result.
+- **W3-RQ4:** Dominant error sources are hashtag-only locations and NER recall
+  gaps, wrong-entity selection (donor vs event site), and the geocoder
+  mis-resolving nicknames/regions (e.g. *Fort. Muck.* → a site in India).
+- **W3-RQ5:** Accuracy is highest on easy claims (55.6% exact, 80% geocoding) and
+  degrades sharply on hard claims (25.5% / 43%).
 
-Five successfully resolved wildfire claims were passed through the **existing**
-NASA FIRMS pipeline (`src/week3_end_to_end.py` →
-`data/week3_end_to_end_examples.csv`) to confirm the improved extraction feeds
-the larger project. Synthetic claims have no real timestamp, so the current
-FIRMS NRT window is queried; no satellite match is fabricated.
+Five resolved wildfire claims were passed through the **existing** NASA FIRMS
+pipeline (`src/week3_end_to_end.py` → `data/week3_end_to_end_examples.csv`) to
+confirm the improved extraction feeds the larger project. These are 2016/2018
+events, which fall outside the ~2-month FIRMS NRT window, so the current window
+is queried and all return `NO_MATCH` — the honest outcome; no satellite match is
+fabricated.
 
 ### Running Week 3
 
 ```bash
+# One-time: download HumAID "Event wise dataset (set1)" from
+# https://crisisnlp.qcri.org/humaid_dataset and extract so data/raw/events_set1/ exists.
+python src/week3_build_dataset.py # -> rehydrates real tweet text locally (ids + annotations are committed)
 python src/week3_evaluation.py    # -> week3_spacy_baseline / geocoding / comparison / difficulty / metrics_summary CSVs
 python src/week3_end_to_end.py    # -> week3_end_to_end_examples.csv (uses FIRMS_MAP_KEY if set)
 jupyter notebook notebooks/week3_location_evaluation.ipynb

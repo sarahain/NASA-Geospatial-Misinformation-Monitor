@@ -23,9 +23,10 @@ import firms
 import ner_methods
 import location_resolution as lr
 import verify
+import week3_build_dataset as w3data
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-TEST_SET_PATH = DATA_DIR / "week3_location_test.csv"
+TEST_SET_PATH = w3data.HYDRATED_PATH  # needs real tweet text (rebuilt locally)
 OUTPUT_PATH = DATA_DIR / "week3_end_to_end_examples.csv"
 
 NUM_EXAMPLES = 5
@@ -44,6 +45,8 @@ def _nearest(lat, lon, detections):
 
 
 def run(test_set_path=TEST_SET_PATH, output_path=OUTPUT_PATH, num_examples=NUM_EXAMPLES):
+    if test_set_path == w3data.HYDRATED_PATH and not w3data.HYDRATED_PATH.exists():
+        w3data.build()  # hydrate real tweet text locally from the HumAID corpus
     claims = pd.read_csv(test_set_path).fillna({"expected_location": ""})
     wildfire = claims[claims["category"] == "wildfire"]
 

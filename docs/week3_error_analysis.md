@@ -4,81 +4,103 @@
 resolved from short environmental misinformation / social-media claims?*
 
 This document records the **recurring failure types** observed when running the
-100-claim Week 3 evaluation set (`data/week3_location_test.csv`) through:
+100-claim Week 3 evaluation set through the extraction and resolution pipeline.
 
-- **Method A** — spaCy baseline NER (`en_core_web_sm`), preserved from Weeks 1–2
-- **Method B** — transformer NER (`dslim/bert-base-NER`), a *model comparison*
-- **spaCy + location resolution** — NER → alias normalization → Nominatim
-  (optional Google fallback) → candidate ranking → coordinates + ambiguity
+## Data
 
-All examples below are taken directly from the generated result CSVs. **No
-evaluation output was edited to hide failures.** The claims are synthetic and
-labelled `source_type = synthetic`; they are not presented as real tweets.
+The evaluation set is **100 real tweets** from the **HumAID** crisis dataset
+(Alam, Ofli & Imran, 2021 — <https://crisisnlp.qcri.org/humaid_dataset>),
+drawn from four environmental-hazard events:
 
-> Note on scoring: for the 11 claims that contain **no** location, correctly
-> extracting nothing is scored `exact` (a true-negative). Headline exact-match
-> rates therefore include those 11 claims; the "located-only" rates in the
-> metrics summary exclude them.
+| Category | Events | Geography |
+|----------|--------|-----------|
+| wildfire (52) | `canada_wildfires_2016`, `greece_wildfires_2018` | Fort McMurray / Alberta / B.C.; Athens / Attica / Mati |
+| flood (48) | `srilanka_floods_2017`, `maryland_floods_2018` | Sri Lanka (Galle, Matara…); Ellicott City / Maryland |
+
+The claim **text is real and unmodified** (only a leading `RT @user:` and URLs
+were stripped). Per HumAID's license, the committed dataset
+(`data/week3_location_test.csv`) stores **tweet IDs + our annotations only**;
+the real text is rehydrated locally by `src/week3_build_dataset.py`. The
+`expected_location` labels are **our** ground truth (assigned by reading each
+tweet); `difficulty` is **computed objectively** from claim features
+(`classify_difficulty`), not hand-tuned. 7 of 100 claims contain no extractable
+location (true-negatives). **No evaluation output was edited to hide failures.**
+
+## Headline numbers (real data)
+
+| Method | Extraction | Exact | Partial | Incorrect | Missing | Geocoding |
+|--------|-----------:|------:|--------:|----------:|--------:|----------:|
+| A — spaCy baseline | 64% | 52% | 12% | 7% | 29% | 63% |
+| B — transformer NER (`dslim/bert-base-NER`) | 82% | 58% | 16% | 15% | 11% | 78% |
+| C — spaCy + resolution | 64% | 37% | 12% | 22% | 29% | 63% |
+
+Geocoding over the 93 located claims: 31 correct, 11 partial, 21 incorrect,
+37 unresolved (ambiguity rate 4%, unresolved 37%).
 
 ---
 
 ## Recurring failure types
 
-1. **Abbreviations** (`NJ`, `NYC`, `LA`) — missed by spaCy's small model.
-2. **Ambiguous city names** — a place name that exists in several
-   states/countries; the geocoder may pick the wrong one.
-3. **Regions instead of cities** (`Northern California`, `Midwest`,
-   `Pacific Northwest`, `Southwest`) — not cleanly geocodable to a single point.
-4. **Multiple locations in one claim** — which is the *event* location?
-5. **Locations spaCy fails to recognize** (`Lahaina`, `Amazon`,
-   `Washington State`).
-6. **Non-location words recognized / resolved as places** — e.g. the brand
-   token "Amazon" resolving to an Amazon warehouse.
-7. **Location missing from the claim** — correctly expected to yield nothing.
-8. **Geocoder selecting the wrong city/state** — right name, wrong place.
+1. **Hashtag-only locations** (`#yeg`, `#FortMcMurray`, `#Athens`, `#SriLanka`)
+   — the place exists only inside a hashtag; spaCy's small model does not tag it.
+2. **Informal nicknames / abbreviations** (`Fort. Muck.` for Fort McMurray,
+   `B.C.`, `Ft. Macmurray`) — missed by NER or mis-resolved by the geocoder.
+3. **Wrong entity chosen among several** — the first entity is a donor/other
+   country, not the event location (e.g. *Norway … in #SriLanka* → `Norway`).
+4. **Regions instead of cities** (`South-west`, `Northern …`) — not a single
+   geocodable point; often resolved abroad.
+5. **Multiple locations in one claim** (`#Mati #Athens #Ireland`) — which is the
+   event site?
+6. **Partial-span extraction** — spaCy returns `Fort` or `Fort St.` instead of
+   the full place, which then geocodes to the wrong location.
+7. **Geocoder picks the wrong place for a real name** (`Fort. Muck.` →
+   *Bihar School of Yoga, India*).
+8. **Localized / non-Latin display names** (`Greece` → `Ελλάς`, `Norway` →
+   `Norge`, `Ireland` → `Éire`) — correct place, but string comparison scores it
+   `incorrect` (a scoring artifact, not a real error).
+9. **Location missing from the claim** — correctly expected to yield nothing.
 
 ---
 
-## Worked examples
+## Worked examples (from the generated result CSVs)
 
-| # | Claim | Expected | Extracted (method) | Resolved location | Failure type | Possible improvement |
-|---|-------|----------|--------------------|-------------------|--------------|----------------------|
-| 1 | *Heavy flooding reported in NJ after record rainfall* | NJ | spaCy: *(none)* · transformer: **NJ** | New Jersey, United States | (1) abbreviation missed by spaCy | Use the transformer for extraction; keep the alias map (`NJ → New Jersey`). |
-| 2 | *Entire community of Lahaina destroyed by wildfire* | Lahaina | spaCy: *(none)* · transformer: **Lahaina** | — | (5) spaCy fails on less-common town names | Transformer recovers these; consider `en_core_web_trf` for the spaCy branch. |
-| 3 | *Trees being cleared across Washington State forests* | Washington State | spaCy: *(none)* · transformer: **Washington** | — | (5) spaCy misses "Washington State" | Transformer extracts it; handle "State" suffix in normalization. |
-| 4 | *Massive deforestation happening in the Amazon rainforest* | Amazon | spaCy: *(none)* · transformer: **Amazon** | Amazon Fulfillment Center, Lakeville, Minnesota | (5) + (6) spaCy misses it; geocoder resolves "Amazon" to a warehouse | Add a biome/region gazetteer for environmental terms; down-rank commercial POIs. |
-| 5 | *Fire crews responding to flames outside Paradise CA* | Paradise | spaCy: *(none)* · transformer: **Paradise** | — | (1)+(5) the "CA" token fused to "Paradise CA" confuses spaCy | Normalize trailing state abbreviations before NER. |
-| 6 | *The whole town of Paradise is burning again* | Paradise | spaCy/transformer: **Paradise** | Paradise, **Clark County, Nevada** | (2)+(8) wrong Paradise — resolved to Nevada, not California | Use claim context (fire/wildfire → Paradise, CA) or require state disambiguation. |
-| 7 | *Wildfires are tearing across Northern California again* | Northern California | spaCy/transformer: **Northern California** | *California Pets Shop… Bahrain* | (3)+(8) region resolved to an unrelated POI abroad | Detect region phrases and map to a bounding box / centroid instead of a point. Currently flagged `ambiguous` (confidence 0.0). |
-| 8 | *Drought is devastating crops in the Midwest* | Midwest | spaCy/transformer: **Midwest** | Midwest, **Natrona County, Wyoming** | (3)+(8) region collides with a small town literally named "Midwest" | Region phrase list; prefer region polygons over same-named towns. |
-| 9 | *Extreme drought gripping the entire Southwest* | Southwest | spaCy/transformer: **Southwest** | Southwest, **Cameroon** | (3)+(8) US region resolved to a region of Cameroon | Constrain the geocoder with a country/viewbox hint from claim context. |
-| 10 | *Illegal logging clearing forests across Brazil* | Brazil | spaCy/transformer: **Brazil** | **Brasil** (Portuguese) | scoring artifact, not a real failure — correct country, localized name | Compare against geocoder country codes, not display strings. |
-| 11 | *Deforestation spreading across the state of Rondonia* | Rondonia, Brazil | transformer: **Rondonia** | **Rondônia**, Região Norte, Brasil | scoring artifact — correct place, diacritics differ | Normalize accents / use place IDs for matching. |
-| 12 | *Smoke from the wildfire near Malibu is reaching Los Angeles* | Malibu; Los Angeles | both: **Malibu**, Los Angeles | Malibu, Los Angeles County, CA | (4) multiple locations — primary chosen as **Malibu** via `after_preposition:near` | Working as intended; record all candidates + the selection reason. |
-| 13 | *Wildfire smoke from Canada is drifting into New York City* | Canada; New York City | both: **Canada**, New York City | *(flagged ambiguous)* | (4) two locations, no locating preposition → `first_of_multiple_ambiguous` | Event-type reasoning (smoke *source* vs *impact*) to pick the primary. |
-| 14 | *Massive wildfire burning in the hills* | *(none)* | *(none)* | — | (7) no location present — correct true-negative | Desired behaviour; the system does not invent a location. |
-| 15 | *Flames spreading fast across the canyon north of the city* | *(none)* | *(none)* | — | (7) vague, no geographic entity — correct true-negative | Desired behaviour; such claims are unverifiable geographically. |
+| # | cid | Claim (real tweet, trimmed) | Expected | Extracted (spaCy) | Resolved | Failure type | Possible improvement |
+|---|-----|------|----------|-------------------|----------|--------------|----------------------|
+| 1 | 12 | *…If you're in the **#yeg** area, please consider helping. #ymmfire* | #yeg (Edmonton) | *(none)* | — | (1) hashtag-only | Expand hashtags / add a hashtag-aware tokenizer before NER. |
+| 2 | 27 | *Vigil held in **#Athens** for #wildfire victims #GreeceFires* | #Athens | *(none)* | — | (1) hashtag-only | Same; many crisis tweets geo-tag only via hashtags. |
+| 3 | 1 | *#NorthernAlbertaWildfires … destroyed **Ft. Macmurray*** | Ft. Macmurray | *(none)* | — | (2) abbreviation/misspelling | Normalize `Ft.`→`Fort`; fuzzy-match rare place spellings. |
+| 4 | 2 | *…friends who live(d) in **Fort. Muck.*** | Fort McMurray | `Fort` (partial) | *Bihar School of Yoga, India* | (2)+(6)+(7) nickname → wrong country | Don't geocode 1-token fragments confidently; use claim context. |
+| 5 | 53 | ***Norway** contributes … flood response in **#SriLanka*** | Sri Lanka | `Norway` (incorrect) | Norge | (3) donor chosen over event site | Prefer the hazard location (hashtag/`#SriLanka`) over donor entities. |
+| 6 | 56 | *Despite rains in **South-west**, … 840,000 in #SriLanka hit by drought* | Sri Lanka | `South-west` (incorrect) | *…Soomaaliya (Somalia)* | (4) region resolved abroad | Treat region words as non-point; constrain by country context. |
+| 7 | 32 | *Irish man confirmed dead in Greek wildfires **#Mati #Athens #Ireland*** | Mati; Athens | `Ireland` (incorrect) | Éire / Ireland | (5) multiple locations, picked the nationality | Rank by event context; down-weight nationality mentions. |
+| 8 | 5 | *Evacuation order issued for fire burning near **Fort St. John**.* | Fort St. John | `Fort St.` (partial) | *Fort Street, Britannia Village* | (6) partial span → wrong place | Extend entity span; geocode the full phrase. |
+| 9 | 82 | *Flash Flood Warning … **#Baltimore** & **#Howard** counties in Maryland* | Howard/Baltimore County | `Maryland` (incorrect vs county) | Maryland, US | (1)+(5) county-level missed | Parse "#X county" patterns; accept county-level matches. |
+| 10 | 31 | *…fire-stricken **Greeks** … says Greek PM Alexis Tsipras* | Greece | `Greece` (exact) | **Ελλάς** | (8) localized name scored incorrect | Match by country code / place-id, not display string. |
+| 11 | 87 | *Maryland's governor declared a state of emergency … **Elliott City*** | Elliott City | `Maryland` | Maryland, US | (2)+(3) misspelled city, state chosen | Fuzzy-match `Elliott`→`Ellicott`; prefer city over state. |
+| 12 | 9 | ***B.C.** wildfire crosses into **Alberta** …* | British Columbia; Alberta | `B.C.` | British Columbia, Canada | (2)+(5) resolved correctly, scored incorrect at extraction only | Alias `B.C.`→British Columbia; credit multi-location matches. |
+| 13 | 34 | *Lucy Neatby is hosting a Fund Raiser for the **Alberta** Wildfire victims.* | Alberta | *(none)* | — | spaCy misses a plain province name | Transformer recovers `Alberta`; consider `en_core_web_trf`. |
 
 ---
 
 ## Cross-cutting observations
 
-- **spaCy's main weakness is recall on abbreviations and less-common /
-  non-US place names** (examples 1–5): 9 of 100 claims are `missing` for the
-  baseline, and the transformer recovers **all 8** that contain a real location.
-- **The resolution step's main weakness is regions and ambiguous names**
-  (examples 6–9): exact-match on the *resolved* string drops versus the raw NER
-  string because the geocoder confidently returns a point for a region, often
-  the wrong one. The system **flags these as `ambiguous`/low-confidence rather
-  than hiding the uncertainty**, which is the intended behaviour.
-- **Some "incorrect" geocodes are scoring artifacts** (examples 10–11):
-  localized names (`Brasil`) and diacritics (`Rondônia`) are actually correct.
-  String comparison understates true geocoding quality; place-ID / country-code
-  matching would fix this.
-- **No false-positive locations from the transformer** were observed on this set
-  (transformer `incorrect_rate = 0`), i.e. failure type (6) came from the
-  *geocoder*, not the NER model, except where a valid token (`Amazon`) maps to a
-  commercial POI.
+- **spaCy's main weakness on real tweets is recall** (`missing = 29%`): it drops
+  hashtag-embedded places, abbreviations, nicknames, and even some plain names
+  (`Alberta`). The transformer cuts `missing` to 11% and raises extraction from
+  64% → 82%.
+- **But the transformer trades recall for precision on noisy text**
+  (`incorrect = 15%` vs spaCy's 7%): on real tweets it tags more non-event or
+  spurious spans, so "better" is not unconditional — exactly the kind of nuance a
+  real dataset exposes that the earlier synthetic set did not.
+- **Resolution is the hardest step on real data.** Only 31% of located claims
+  geocode to a clearly correct place; 37% are unresolved (nothing clean to
+  geocode) and 21% are `incorrect` — though several of those are **scoring
+  artifacts** from localized display names (`Ελλάς`, `Norge`, `Éire`), so true
+  geocoding quality is somewhat higher than 31%.
+- **Difficulty tracks the model.** Exact-match (spaCy + resolution) is 55.6% on
+  easy claims but only 25.5% on hard claims; geocoding success falls from 80% to
+  43%. (The 8 `medium` "City, State" claims score 0% *exact* because the resolver
+  returns the city and drops the state — they count as `partial`, not `exact`.)
 
 See `data/week3_model_comparison.csv`, `data/week3_geocoding_results.csv`, and
 `data/week3_difficulty_analysis.csv` for the full numbers behind these examples.

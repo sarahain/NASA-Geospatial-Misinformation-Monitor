@@ -1,101 +1,101 @@
-claim_id,text,category,expected_location,expected_normalized_location,difficulty,source_type
-1,Wildfire spreading through the hills near Malibu tonight,wildfire,Malibu,"Malibu, California",easy,synthetic
-2,Firefighters are battling a fast-moving blaze in Los Angeles,wildfire,Los Angeles,"Los Angeles, California",easy,synthetic
-3,Huge fire just broke out in LA and the sky is orange,wildfire,LA,"Los Angeles, California",medium,synthetic
-4,The whole town of Paradise is burning again,wildfire,Paradise,"Paradise, California",hard,synthetic
-5,Entire community of Lahaina destroyed by wildfire,wildfire,Lahaina,"Lahaina, Hawaii",easy,synthetic
-6,Smoke from the fires is covering all of Maui,wildfire,Maui,"Maui, Hawaii",easy,synthetic
-7,Wildfires are tearing across Northern California again,wildfire,Northern California,"Northern California, United States",hard,synthetic
-8,Evacuations ordered in Orange County as flames approach,wildfire,Orange County,"Orange County, California",medium,synthetic
-9,A massive wildfire is burning somewhere in the Pacific Northwest,wildfire,Pacific Northwest,"Pacific Northwest, United States",hard,synthetic
-10,Brush fire reported near San Diego County border,wildfire,San Diego County,"San Diego County, California",medium,synthetic
-11,Flames spreading fast across the canyon north of the city,wildfire,,,hard,synthetic
-12,Smoke from the wildfire near Malibu is reaching Los Angeles,wildfire,Malibu; Los Angeles,"Malibu, California",hard,synthetic
-13,Wildfire smoke from Canada is drifting into New York City,wildfire,Canada; New York City,"Canada",hard,synthetic
-14,Yellowstone is on fire according to posts online,wildfire,Yellowstone,"Yellowstone National Park, United States",medium,synthetic
-15,Quebec wildfires are sending smoke all the way south,wildfire,Quebec,"Quebec, Canada",medium,synthetic
-16,Wildfire burning out of control near Phoenix,wildfire,Phoenix,"Phoenix, Arizona",easy,synthetic
-17,Crews fighting a wildfire in Washington State,wildfire,Washington State,"Washington, United States",medium,synthetic
-18,They say a fire started up north near the border,wildfire,Canada,"Canada",hard,synthetic
-19,Wildfire threatens homes across San Diego County tonight,wildfire,San Diego County,"San Diego County, California",medium,synthetic
-20,Another fire ignited along the Malibu coastline this afternoon,wildfire,Malibu,"Malibu, California",easy,synthetic
-21,Huge blaze reported in the mountains above LA,wildfire,LA,"Los Angeles, California",medium,synthetic
-22,Fire crews responding to flames outside Paradise CA,wildfire,Paradise,"Paradise, California",medium,synthetic
-23,Wildfire smoke turning the sky orange over NYC,wildfire,NYC,"New York, New York",medium,synthetic
-24,Massive wildfire burning in the hills,wildfire,,,hard,synthetic
-25,Thousands evacuated as wildfire spreads through Northern California counties,wildfire,Northern California,"Northern California, United States",hard,synthetic
-26,Wildfire near Yellowstone forces trail closures,wildfire,Yellowstone,"Yellowstone National Park, United States",medium,synthetic
-27,Fire reported near the Oregon-California state line,wildfire,Oregon,"Oregon, United States",hard,synthetic
-28,Flames visible from downtown Phoenix tonight,wildfire,Phoenix,"Phoenix, Arizona",easy,synthetic
-29,Wildfire scorching land across Washington,wildfire,Washington,"Washington, United States",hard,synthetic
-30,Smoke so thick in LA you cannot see the hills,wildfire,LA,"Los Angeles, California",medium,synthetic
-31,Evacuation orders issued for parts of San Diego County,wildfire,San Diego County,"San Diego County, California",medium,synthetic
-32,A wildfire is burning near Lake Tahoe on the border,wildfire,Lake Tahoe,"Lake Tahoe, United States",hard,synthetic
-33,Wildfires rage on both sides near the Quebec border,wildfire,Quebec,"Quebec, Canada",hard,synthetic
-34,Fire approaching neighborhoods in Orange County,wildfire,Orange County,"Orange County, California",medium,synthetic
-35,Entire ridgeline is on fire somewhere out west,wildfire,,,hard,synthetic
-36,Major flooding reported across Houston after the storm,flood,Houston,"Houston, Texas",easy,synthetic
-37,Streets completely underwater in Miami this morning,flood,Miami,"Miami, Florida",easy,synthetic
-38,Flash flooding hitting South Florida right now,flood,South Florida,"South Florida, United States",hard,synthetic
-39,The Mississippi River is flooding towns all along it,flood,Mississippi River,"Mississippi River, United States",hard,synthetic
-40,Severe floods devastating parts of New Jersey,flood,New Jersey,"New Jersey, United States",medium,synthetic
-41,Heavy flooding reported in NJ after record rainfall,flood,NJ,"New Jersey, United States",medium,synthetic
-42,Flooding has shut down roads across New York City,flood,New York City,"New York, New York",easy,synthetic
-43,Water rising fast in downtown after the levee broke,flood,,,hard,synthetic
-44,Catastrophic flooding across the entire Gulf Coast,flood,Gulf Coast,"Gulf Coast, United States",hard,synthetic
-45,Flooding reported in Washington near the river,flood,Washington,"Washington, United States",hard,synthetic
-46,Homes submerged by floodwaters in Louisiana,flood,Louisiana,"Louisiana, United States",medium,synthetic
-47,Flash flood warning issued for San Diego County,flood,San Diego County,"San Diego County, California",medium,synthetic
-48,Floodwaters swallowing streets in New Orleans,flood,New Orleans,"New Orleans, Louisiana",easy,synthetic
-49,Massive flooding near Phoenix after monsoon rains,flood,Phoenix,"Phoenix, Arizona",medium,synthetic
-50,Record floods submerging parts of Quebec,flood,Quebec,"Quebec, Canada",medium,synthetic
-51,The river overflowed and the whole valley is flooded,flood,,,hard,synthetic
-52,Flooding in Miami and Fort Lauderdale is getting worse,flood,Miami; Fort Lauderdale,"Miami, Florida",hard,synthetic
-53,Severe drought is drying up reservoirs across California,drought,California,"California, United States",medium,synthetic
-54,Lake Mead hitting record lows amid the drought,drought,Lake Mead,"Lake Mead, United States",medium,synthetic
-55,Extreme drought gripping the entire Southwest,drought,Southwest,"Southwestern United States",hard,synthetic
-56,Farmers struggling as drought spreads through Texas,drought,Texas,"Texas, United States",easy,synthetic
-57,Drought conditions worsening across Arizona,drought,Arizona,"Arizona, United States",easy,synthetic
-58,The Colorado River is drying up from the drought,drought,Colorado River,"Colorado River, United States",hard,synthetic
-59,Water restrictions as drought hits LA County,drought,LA County,"Los Angeles County, California",medium,synthetic
-60,Severe drought reported across the Central Valley,drought,Central Valley,"Central Valley, California",hard,synthetic
-61,Reservoirs nearly empty after years of drought,drought,,,hard,synthetic
-62,Drought is devastating crops in the Midwest,drought,Midwest,"Midwestern United States",hard,synthetic
-63,Prolonged drought drying out Northern California,drought,Northern California,"Northern California, United States",hard,synthetic
-64,Historic drought conditions across New Mexico,drought,New Mexico,"New Mexico, United States",easy,synthetic
-65,Drought emptying wells across San Diego County,drought,San Diego County,"San Diego County, California",medium,synthetic
-66,Everything is bone dry out west this year,drought,,,hard,synthetic
-67,Air quality is hazardous in Los Angeles today,air_quality,Los Angeles,"Los Angeles, California",easy,synthetic
-68,The AQI in NYC is off the charts right now,air_quality,NYC,"New York, New York",medium,synthetic
-69,Thick smog settling over the LA basin,air_quality,LA,"Los Angeles, California",medium,synthetic
-70,Air pollution reaching dangerous levels in Phoenix,air_quality,Phoenix,"Phoenix, Arizona",easy,synthetic
-71,Hazy skies and poor air quality across New Jersey,air_quality,New Jersey,"New Jersey, United States",medium,synthetic
-72,Smoke pushing air quality into the red over Seattle,air_quality,Seattle,"Seattle, Washington",easy,synthetic
-73,Air quality alert issued for the entire Bay Area,air_quality,Bay Area,"San Francisco Bay Area, California",hard,synthetic
-74,Pollution so bad you can taste it in the air downtown,air_quality,,,hard,synthetic
-75,Unhealthy air quality blanketing South Florida,air_quality,South Florida,"South Florida, United States",hard,synthetic
-76,Smog warning for Washington commuters this morning,air_quality,Washington,"Washington, United States",hard,synthetic
-77,Air quality dropping fast across Northern California,air_quality,Northern California,"Northern California, United States",hard,synthetic
-78,Dangerous air quality reported in San Diego County,air_quality,San Diego County,"San Diego County, California",medium,synthetic
-79,Wildfire smoke tanked the air quality in NYC and Philadelphia,air_quality,NYC; Philadelphia,"New York, New York",hard,synthetic
-80,Air feels thick and smoky everywhere today,air_quality,,,hard,synthetic
-81,Massive deforestation happening in the Amazon rainforest,deforestation,Amazon,"Amazon Rainforest, Brazil",medium,synthetic
-82,Illegal logging clearing forests across Brazil,deforestation,Brazil,"Brazil",easy,synthetic
-83,Satellite images show forest loss in the Congo Basin,deforestation,Congo Basin,"Congo Basin, Africa",hard,synthetic
-84,Clearcutting destroying old growth in the Pacific Northwest,deforestation,Pacific Northwest,"Pacific Northwest, United States",hard,synthetic
-85,Rainforest being cleared at alarming rates in Indonesia,deforestation,Indonesia,"Indonesia",easy,synthetic
-86,Deforestation spreading across the state of Rondonia,deforestation,Rondonia,"Rondonia, Brazil",hard,synthetic
-87,Forests are being wiped out somewhere in the tropics,deforestation,,,hard,synthetic
-88,Logging roads cutting deep into the Amazon basin,deforestation,Amazon,"Amazon Rainforest, Brazil",medium,synthetic
-89,Forest cover vanishing across parts of California,deforestation,California,"California, United States",medium,synthetic
-90,Deforestation accelerating in the Brazilian Amazon,deforestation,Brazilian Amazon,"Amazon Rainforest, Brazil",medium,synthetic
-91,Trees being cleared across Washington State forests,deforestation,Washington State,"Washington, United States",medium,synthetic
-92,Huge swaths of forest gone near the Oregon coast,deforestation,Oregon,"Oregon, United States",medium,synthetic
-93,They are tearing down the forest just outside town,deforestation,,,hard,synthetic
-94,Deforestation reported in both Brazil and Peru,deforestation,Brazil; Peru,"Brazil",hard,synthetic
-95,Wildfire forcing evacuations near the Malibu canyons,wildfire,Malibu,"Malibu, California",easy,synthetic
-96,Flooding and mudslides reported across LA County,flood,LA County,"Los Angeles County, California",medium,synthetic
-97,Drought pushing water levels dangerously low in Lake Mead,drought,Lake Mead,"Lake Mead, United States",medium,synthetic
-98,Air quality warnings issued for Washington State residents,air_quality,Washington State,"Washington, United States",medium,synthetic
-99,Deforestation threatening habitats in the Amazon,deforestation,Amazon,"Amazon Rainforest, Brazil",medium,synthetic
-100,Wildfire smoke drifting from Quebec all the way to New York,wildfire,Quebec; New York,"Quebec, Canada",hard,synthetic
+claim_id,tweet_id,category,expected_location,expected_normalized_location,difficulty,source_type,dataset
+1,733139128284372993,wildfire,Ft. Macmurray,"Fort McMurray, Alberta, Canada",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+2,729279024019722242,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+3,728609383563862017,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+4,735888420120219648,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+5,732284876188045312,wildfire,Fort St. John,"Fort St. John, British Columbia, Canada",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+6,728674229164511232,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+7,728798158612897792,wildfire,Canada,Canada,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+8,732239833834229760,wildfire,B.C.,"British Columbia, Canada",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+9,728710371452686336,wildfire,British Columbia; Alberta,"British Columbia, Canada",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+10,730007908411428864,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+11,732558412710481920,wildfire,Fort McMurray; Edmonton,"Fort McMurray, Alberta, Canada",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+12,734558461783113728,wildfire,#yeg,"Edmonton, Alberta, Canada",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+13,731512686547243010,wildfire,"Gold Bar, Wash.","Gold Bar, Washington, United States",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+14,729822546233712644,wildfire,Alberta,"Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+15,728655666349375488,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+16,730232105137930240,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+17,729004814865027072,wildfire,Alberta,"Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+18,732356254106943489,wildfire,#FortMacFire,"Fort McMurray, Alberta, Canada",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+19,728606357960704006,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+20,732584373984317440,wildfire,Alberta,"Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+21,729143335475027968,wildfire,#FortMcMurray,"Fort McMurray, Alberta, Canada",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+22,734011340403138560,wildfire,,,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+23,728806631849512960,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+24,731323477660049408,wildfire,,,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+25,735159445714411520,wildfire,Fort McMurray,"Fort McMurray, Alberta, Canada",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+26,729340540626472960,wildfire,,,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [canada_wildfires_2016]"
+27,1024032569023705089,wildfire,#Athens,"Athens, Greece",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+28,1021728450321756165,wildfire,Greece,Greece,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+29,1021722772849020928,wildfire,Greece,Greece,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+30,1022027327872675841,wildfire,Athens,"Athens, Greece",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+31,1023346187133440000,wildfire,Greece,Greece,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+32,1022174982972039172,wildfire,Mati; Athens,"Mati, Attica, Greece",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+33,1029178954777853959,wildfire,Chania; Crete,"Chania, Crete, Greece",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+34,1027109800889524224,wildfire,Attica,"Attica, Greece",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+35,1021741722815143936,wildfire,Greece,Greece,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+36,1023634394895003648,wildfire,Greece,Greece,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+37,1022138816033972224,wildfire,Greece,Greece,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+38,1022233033875881994,wildfire,Greece,Greece,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+39,1023526815074279424,wildfire,Athens,"Athens, Greece",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+40,1021724736915759104,wildfire,Athens,"Athens, Greece",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+41,1021806419979526145,wildfire,Greece; Portugal,Greece,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+42,1026012401790054400,wildfire,Mati; Greece,"Mati, Attica, Greece",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+43,1021817205061836802,wildfire,Greece; Sweden,Greece,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+44,1021776798479249408,wildfire,Greece,Greece,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+45,1022310663832649728,wildfire,Mati; Greece,"Mati, Attica, Greece",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+46,1021751308775239680,wildfire,Greece,Greece,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+47,1021753641093550080,wildfire,Athens,"Athens, Greece",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+48,1025330877486850048,wildfire,Greece,Greece,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+49,1022108745260617730,wildfire,Greece,Greece,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+50,1021774635682201601,wildfire,Greece,Greece,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+51,1021770623612342274,wildfire,,,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+52,1021756551588143110,wildfire,,,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [greece_wildfires_2018]"
+53,870261679778562048,flood,Sri Lanka,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+54,873397891196440582,flood,Sri Lanka; Israel,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+55,870256276869181440,flood,Sri Lanka,Sri Lanka,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+56,879230855549513728,flood,Sri Lanka,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+57,870359656379502592,flood,Galle; Neluwa,"Galle, Sri Lanka",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+58,878855642890596352,flood,Sri Lanka,Sri Lanka,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+59,879711392550596608,flood,Sri Lanka,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+60,877452472125710336,flood,Sri Lanka,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+61,870124017734352897,flood,Sri Lanka,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+62,870153442664210432,flood,Sri Lanka,Sri Lanka,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+63,870942928482467841,flood,Sri Lanka,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+64,873906773777895428,flood,Sri Lanka; Canada,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+65,870236474427551744,flood,Sri Lanka,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+66,870158705404370945,flood,Matara,"Matara, Sri Lanka",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+67,870833926574616577,flood,Kalutara,"Kalutara, Sri Lanka",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+68,870172961826852866,flood,Sri Lanka,Sri Lanka,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+69,872080126984339456,flood,Sri Lanka,Sri Lanka,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+70,871148147975659520,flood,Taiwan,Taiwan,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+71,870155426435702784,flood,Sri Lanka,Sri Lanka,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+72,870447164660600833,flood,Sri Lanka,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+73,870714879539384320,flood,Maharagama,"Maharagama, Sri Lanka",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+74,870848136155025408,flood,Sri Lanka,Sri Lanka,easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+75,870085868912037888,flood,Sri Lanka,Sri Lanka,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [srilanka_floods_2017]"
+76,1003295658097500160,flood,Ellicott City; Maryland,"Ellicott City, Maryland, United States",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+77,1001624006485688320,flood,Maryland,"Maryland, United States",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+78,1001439980995178496,flood,"Ellicott, Maryland","Ellicott City, Maryland, United States",medium,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+79,1002048883243929600,flood,Ellicott City,"Ellicott City, Maryland, United States",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+80,1001264739765415936,flood,Maryland,"Maryland, United States",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+81,1001614473415876608,flood,"Ellicott City, Maryland","Ellicott City, Maryland, United States",medium,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+82,1002331628369215489,flood,Howard County; Baltimore County,"Howard County, Maryland, United States",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+83,1001543950845468672,flood,Maryland,"Maryland, United States",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+84,1001359313305292800,flood,Maryland,"Maryland, United States",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+85,1001197004247183361,flood,"Ellicott City, Maryland","Ellicott City, Maryland, United States",medium,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+86,1003442050652626945,flood,"Cheverly, Maryland","Cheverly, Maryland, United States",medium,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+87,1001177012512350209,flood,Elliott City,"Ellicott City, Maryland, United States",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+88,1001192363719618561,flood,"Elicott City, Maryland","Ellicott City, Maryland, United States",medium,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+89,1001228400697249792,flood,"Ellicott City, Maryland","Ellicott City, Maryland, United States",medium,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+90,1002511281511776256,flood,Maryland,"Maryland, United States",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+91,1001203964648607747,flood,Maryland,"Maryland, United States",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+92,1001528621641723904,flood,Ellicott City; Maryland,"Ellicott City, Maryland, United States",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+93,1001260095223758850,flood,"Ellicott City, Maryland","Ellicott City, Maryland, United States",medium,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+94,1003294137335066624,flood,Maryland; Virginia; Delaware,"Maryland, United States",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+95,1001183184229359617,flood,Maryland,"Maryland, United States",easy,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+96,1001456447245336576,flood,"Ellicott City, Maryland","Ellicott City, Maryland, United States",medium,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+97,1002052137835261954,flood,Ellicott City; Maryland,"Ellicott City, Maryland, United States",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+98,1001915701546881024,flood,Ellicott City; Maryland,"Ellicott City, Maryland, United States",hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+99,1001443716320579585,flood,,,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"
+100,1003706990869311488,flood,,,hard,real,"HumAID (Alam, Ofli & Imran, 2021); https://crisisnlp.qcri.org/humaid_dataset [maryland_floods_2018]"

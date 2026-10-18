@@ -28,9 +28,12 @@ import pandas as pd
 import location_resolution as lr
 import ner
 import ner_methods
+import week3_build_dataset as w3data
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-TEST_SET_PATH = DATA_DIR / "week3_location_test.csv"
+# The evaluation needs the real tweet TEXT, which lives only in the (git-ignored)
+# hydrated file. It is rebuilt locally from the HumAID corpus on demand.
+TEST_SET_PATH = w3data.HYDRATED_PATH
 
 SPACY_BASELINE_PATH = DATA_DIR / "week3_spacy_baseline.csv"
 GEOCODING_PATH = DATA_DIR / "week3_geocoding_results.csv"
@@ -51,6 +54,25 @@ def _expected_parts(expected_location):
     if not str(expected_location).strip():
         return []
     return [p.strip() for p in str(expected_location).split(";") if p.strip()]
+
+
+def _combine_expected(expected, expected_normalized):
+    """Merge the raw and normalized gold labels into one ';'-joined value.
+
+    ``score_extraction`` matches an extraction against ANY ';'-separated part,
+    so this lets the normalization-producing method (Method C) match either the
+    raw label (e.g. "LA") or the normalized one (e.g. "Los Angeles, California")
+    without inventing a match. Empty labels (no-location claims) stay empty.
+    """
+    parts = _expected_parts(expected) + _expected_parts(expected_normalized)
+    # Preserve order, drop duplicates.
+    seen, ordered = set(), []
+    for p in parts:
+        key = p.lower()
+        if key not in seen:
+            seen.add(key)
+            ordered.append(p)
+    return "; ".join(ordered)
 
 
 def score_extraction(expected_location, primary_location):
@@ -116,6 +138,8 @@ def score_geocoding(expected_normalized, resolution):
 # --- Core evaluation --------------------------------------------------------
 def evaluate(test_set_path=TEST_SET_PATH, use_transformer=True):
     """Run the full evaluation and return a dict of result DataFrames."""
+    if test_set_path == w3data.HYDRATED_PATH and not w3data.HYDRATED_PATH.exists():
+        w3data.build()  # hydrate real tweet text locally from the HumAID corpus
     claims = pd.read_csv(test_set_path).fillna({"expected_location": "", "expected_normalized_location": ""})
 
     spacy_extractor = ner_methods.get_extractor("spacy")
@@ -157,7 +181,15 @@ def evaluate(test_set_path=TEST_SET_PATH, use_transformer=True):
 
         # --- spaCy + full location resolution ---
         res = lr.resolve_claim(text, spacy_extractor, use_context=True)
-        res_result = score_extraction(expected, _leading(res["normalized_location"]) or res["primary_location"])
+        # Method C outputs a *normalized* location, so it is scored against both
+        # the raw and the normalized gold label (a match against either counts).
+        # Otherwise correct expansions like "LA" -> "Los Angeles" would be mis-
+        # scored as 'incorrect' purely because they no longer equal the raw
+        # abbreviation, understating the resolution step.
+        res_result = score_extraction(
+            _combine_expected(expected, expected_norm),
+            _leading(res["normalized_location"]) or res["primary_location"],
+        )
         geo_result = score_geocoding(expected_norm, res)
         geocoding_rows.append(
             {
