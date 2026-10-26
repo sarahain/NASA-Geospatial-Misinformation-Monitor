@@ -51,7 +51,9 @@ DATASET_NAME = "X"
 
 BEARER_TOKEN_ENV = "X_BEARER_TOKEN"
 SEARCH_URL = "https://api.twitter.com/2/tweets/search/recent"
+LOOKUP_URL = "https://api.twitter.com/2/tweets"  # hydrate known ids by lookup
 API_MAX_PER_PAGE = 100  # X API v2 recent-search page cap
+API_LOOKUP_BATCH = 100  # id-lookup batch cap
 
 # Example disaster queries (wildfire-focused, matching the project scope).
 DEFAULT_QUERIES = [
@@ -105,6 +107,102 @@ def _default_exclude_retweets(query):
     if "is:retweet" in query:
         return query
     return f"({query}) -is:retweet"
+
+
+# Wildfire terms used by the local-search helper.
+WILDFIRE_TERMS = "(wildfire OR \"wild fire\" OR bushfire OR \"forest fire\" OR \"brush fire\" OR \"fire evacuation\")"
+
+
+def build_local_query(location=None, point_radius=None, terms=WILDFIRE_TERMS):
+    """Build an official-API query for *local, updated* wildfire tweets.
+
+    This is the **compliant replacement for a web scraper**: it produces a query
+    string for the official X API v2 recent-search endpoint, optionally narrowed
+    to a place.
+
+    Parameters
+    ----------
+    location : str | None
+        A place name added both as a free-text term and (best effort) as the
+        ``place:"..."`` operator, e.g. ``"Los Angeles"``.
+    point_radius : tuple[float, float, float] | None
+        ``(longitude, latitude, radius_km)`` -> adds the
+        ``point_radius:[lon lat <r>km]`` geo operator.
+    terms : str
+        The hazard terms to search for (defaults to wildfire synonyms).
+
+    Note: the ``place:`` / ``point_radius:`` geo operators require elevated /
+    Academic API access on many tiers; on basic access, fall back to the
+    free-text location term. We never scrape to work around access limits.
+    """
+    parts = [terms]
+    if location:
+        safe = location.replace('"', "")
+        parts.append(f'("{safe}" OR place:"{safe}")')
+    if point_radius:
+        lon, lat, radius_km = point_radius
+        parts.append(f"point_radius:[{lon} {lat} {int(radius_km)}km]")
+    return " ".join(parts)
+
+
+def hydrate_tweet_ids(tweet_ids, bearer_token, include_author=True, session=None):
+    """Fetch real tweet text for KNOWN ids via the official API id-lookup endpoint.
+
+    This is how curated references (e.g. ``wildfire_tweet_refs.csv``) get their
+    text -- by the **official API**, by id, never by scraping. Returns a list of
+    record dicts (same shape as recent search, minus ``query_used``). Tweets that
+    are deleted / protected simply do not come back; we do not expose private
+    account information.
+    """
+    requests = _require_requests()
+    session = session or requests.Session()
+    headers = {"Authorization": f"Bearer {bearer_token}"}
+    tweet_fields = ["created_at", "geo"]
+    if include_author:
+        tweet_fields.append("author_id")
+
+    retrieved_at = datetime.now(timezone.utc).isoformat()
+    ids = [str(i).strip() for i in tweet_ids if str(i).strip()]
+    records = []
+    for start in range(0, len(ids), API_LOOKUP_BATCH):
+        batch = ids[start:start + API_LOOKUP_BATCH]
+        params = {
+            "ids": ",".join(batch),
+            "tweet.fields": ",".join(tweet_fields),
+            "expansions": "geo.place_id",
+            "place.fields": "full_name,name,country,geo",
+        }
+        resp = session.get(LOOKUP_URL, headers=headers, params=params, timeout=30)
+        if resp.status_code == 401:
+            raise XIngestionError("X API returned 401 Unauthorized -- check X_BEARER_TOKEN.")
+        if resp.status_code == 429:
+            raise XIngestionError("X API rate limit hit (429). Try again later.")
+        if resp.status_code != 200:
+            raise XIngestionError(f"X API error {resp.status_code}: {resp.text[:200]}")
+
+        payload = resp.json()
+        places_by_id = {p["id"]: p for p in payload.get("includes", {}).get("places", [])}
+        for tweet in payload.get("data", []):
+            place_name, place_country, place_full_name, has_coords = _flatten_place(
+                tweet, places_by_id
+            )
+            records.append(
+                {
+                    "post_id": tweet.get("id", ""),
+                    "text": tweet.get("text", ""),
+                    "created_at": tweet.get("created_at", ""),
+                    "author_id": tweet.get("author_id", "") if include_author else "",
+                    "place_name": place_name,
+                    "place_country": place_country,
+                    "place_full_name": place_full_name,
+                    "has_coordinates": has_coords,
+                    "query_used": "id_lookup",
+                    "retrieved_at": retrieved_at,
+                    "data_origin": DATA_ORIGIN,
+                    "dataset_name": DATASET_NAME,
+                }
+            )
+    return records
 
 
 def _flatten_place(tweet, places_by_id):
@@ -299,14 +397,24 @@ def _build_arg_parser():
     parser.add_argument(
         "--include-retweets", action="store_true", help="Include reposts (default: excluded)."
     )
+    parser.add_argument(
+        "--location",
+        default=None,
+        help="Narrow to local, updated wildfire tweets near a place, e.g. 'Los Angeles'. "
+        "Builds an official-API query (compliant alternative to scraping).",
+    )
     return parser
 
 
 if __name__ == "__main__":
     args = _build_arg_parser().parse_args()
+    # --location builds a local wildfire query via the official API (no scraping).
+    queries = args.queries
+    if args.location:
+        queries = (queries or []) + [build_local_query(location=args.location)]
     try:
         records = ingest(
-            queries=args.queries,
+            queries=queries,
             max_results=args.max_results,
             start_time=args.start_time,
             end_time=args.end_time,
@@ -318,5 +426,4 @@ if __name__ == "__main__":
     else:
         print(f"Ingested {len(records)} live posts ({DATA_ORIGIN}, dataset={DATASET_NAME})")
         print(f"  written to : {OUTPUT_PATH} (git-ignored; API content + not redistributed)")
-        queries = args.queries or DEFAULT_QUERIES
-        print(f"  queries    : {queries}")
+        print(f"  queries    : {queries or DEFAULT_QUERIES}")

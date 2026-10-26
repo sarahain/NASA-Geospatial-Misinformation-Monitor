@@ -6,6 +6,7 @@ import crisismmd_loader as cm
 import humaid_loader as hl
 import scraped_tweets_loader as st
 import week4_real_vs_synthetic as w4
+import wildfire_tweet_refs_loader as wr
 import x_ingestion as xi
 
 
@@ -138,6 +139,51 @@ def test_x_exclude_retweets_and_place_flatten():
         {"p1": {"name": "Malibu", "country": "United States", "full_name": "Malibu, CA"}},
     )
     assert (name, country, full, has_coords) == ("Malibu", "United States", "Malibu, CA", False)
+
+
+def test_x_build_local_query_adds_location_and_radius():
+    q = xi.build_local_query(location="Los Angeles")
+    assert "wildfire" in q.lower()
+    assert '"Los Angeles"' in q and 'place:"Los Angeles"' in q
+    q2 = xi.build_local_query(location=None, point_radius=(-118.24, 34.05, 25))
+    assert "point_radius:[-118.24 34.05 25km]" in q2
+
+
+# --- Wildfire tweet references loader (xlsx/csv of real tweet URLs) ---------
+def test_wildfire_refs_loader_extracts_ids_and_flags_labels(tmp_path):
+    csv_path = tmp_path / "refs.csv"
+    with open(csv_path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        w.writerow(["tweet", "positive_or_negative", "misinformation_likelihood"])
+        w.writerow(["https://x.com/ESA_EO/status/1877728694669824025", "Device set to use cpu", ""])
+        # Same tweet id repeated with different junk label -> de-duplicated.
+        w.writerow(["https://x.com/ESA_EO/status/1877728694669824025", "Negative", ""])
+        w.writerow(["https://x.com/SkyNews/status/1876854913323397234", "Positive", ""])
+        w.writerow(["not a tweet url", "x", ""])  # skipped
+
+    records, total_refs = wr.load_records(input_path=csv_path)
+    assert total_refs == 3  # three valid URL rows (one is a dup id)
+    assert len(records) == 2  # unique tweet ids
+    r = records[0]
+    assert set(r) == set(wr.OUTPUT_FIELDS)
+    assert r["tweet_id"] == "1877728694669824025"
+    assert r["author_handle"] == "ESA_EO"
+    assert r["source_url"].endswith("/status/1877728694669824025")
+    assert r["data_origin"] == "REAL_DATASET"
+    assert r["label_reliability"] == "unreliable_llm_output"
+    assert r["needs_api_hydration"] == "true"
+
+
+def test_wildfire_refs_loader_errors_without_tweet_column(tmp_path):
+    csv_path = tmp_path / "bad.csv"
+    with open(csv_path, "w", newline="", encoding="utf-8") as fh:
+        csv.writer(fh).writerow(["foo", "bar"])
+    try:
+        wr.load_records(input_path=csv_path)
+    except SystemExit:
+        pass
+    else:
+        raise AssertionError("expected SystemExit when no tweet-URL column is present")
 
 
 # --- Week 4 experiment -----------------------------------------------------

@@ -248,7 +248,16 @@ geolocation.
   `end_time` / `max_results`, and stores `post_id, text, created_at, author_id`
   (optional), place metadata (only when the API returns a place — coordinates
   are never assumed), `query_used` and `retrieved_at`. Without credentials it
-  skips gracefully.
+  skips gracefully. `--location "Los Angeles"` builds a **local, updated**
+  wildfire query via the official API (the compliant alternative to a scraper);
+  `hydrate_tweet_ids()` fetches text for known tweet IDs by official id-lookup.
+- **Curated tweet references** (`src/wildfire_tweet_refs_loader.py`,
+  `data_origin = REAL_DATASET`) imports a small spreadsheet (CSV/XLSX) of **real
+  tweet URLs** (e.g. 2025 California wildfire posts) into tweet IDs + handles +
+  source URLs. Any spreadsheet label columns are kept verbatim and flagged
+  `label_reliability = unreliable_llm_output` (never trusted as ground truth);
+  tweet text is hydrated via the official API, not scraped. See
+  <docs/week4_wildfire_tweet_refs.md>.
 
 ### Licensing / what is and isn't committed
 

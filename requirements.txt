@@ -5,6 +5,7 @@ requests
 jupyter
 matplotlib
 pytest
+openpyxl  # read .xlsx curated tweet-reference spreadsheets (wildfire_tweet_refs_loader)
 
 # Optional (Week 3 Method B: transformer NER, dslim/bert-base-NER).
 # The project runs fine without these; the evaluation records that Method B is
