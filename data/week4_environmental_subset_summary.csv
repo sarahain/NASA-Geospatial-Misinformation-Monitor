@@ -1,0 +1,10 @@
+event,event_type,number_of_posts,posts_with_detected_location,location_extraction_rate
+canada_wildfires_2016,wildfire,2242,1072,47.8
+cyclone_idai_2019,cyclone,3933,1614,41.0
+greece_wildfires_2018,wildfire,1515,867,57.2
+hurricane_harvey_2017,hurricane,9112,3255,35.7
+hurricane_irma_2017,hurricane,9399,4163,44.3
+hurricane_maria_2017,hurricane,7278,3359,46.2
+hurricane_matthew_2016,hurricane,1654,1386,83.8
+maryland_floods_2018,flood,742,620,83.6
+srilanka_floods_2017,flood,560,192,34.3

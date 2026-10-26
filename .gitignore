@@ -21,6 +21,13 @@ data/research_metrics.csv
 # under HumAID's terms -- only tweet ids may be shared), so it is never committed.
 data/raw/
 
+# Week 4 processed REAL-text / LIVE-API datasets. These contain real post text
+# (HumAID, CrisisMMD) or live API content (X) that must NOT be redistributed
+# under the dataset licenses / platform terms. Rebuild locally with
+# src/humaid_loader.py, src/crisismmd_loader.py, src/x_ingestion.py.
+# (data/week4_real_vs_synthetic.csv holds only aggregate metrics and IS tracked.)
+data/processed/
+
 # Hydrated real test set (tweet ids + the real tweet TEXT). Rebuilt locally by
 # src/week3_build_dataset.py from data/raw. Text must not be committed; only the
 # ids-only data/week3_location_test.csv is tracked.

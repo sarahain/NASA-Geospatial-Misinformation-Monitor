@@ -1,0 +1,4 @@
+data_origin,dataset_name,label_basis,number_of_posts,location_extraction_rate,exact_or_manual_location_match_rate,ambiguous_location_rate,missing_location_rate
+SYNTHETIC,project_synthetic,manual_synthetic_labels,100,80.0,85.0,4.0,9.0
+REAL_DATASET,HumAID (labelled subset),manual_annotations,100,64.0,52.0,4.0,29.0
+REAL_DATASET,HumAID (unlabelled corpus sample n=300),no_location_ground_truth,300,47.7,NA,5.0,NA

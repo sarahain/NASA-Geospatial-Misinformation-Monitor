@@ -201,11 +201,110 @@ python src/week3_end_to_end.py    # -> week3_end_to_end_examples.csv (uses FIRMS
 jupyter notebook notebooks/week3_location_evaluation.ipynb
 ```
 
+## Week 4 — Real Social-Media Text
+
+Week 4 shifts the project from relying primarily on synthetic claims to using
+**real disaster-related social-media text** for evaluation, while keeping
+synthetic claims for controlled pipeline testing. Nothing is fabricated: no
+tweets are invented, and no labels are made up for data that lacks them.
+
+### Three clearly-separated data categories
+
+Every record carries a `data_origin` field that is **exactly one** of:
+
+| `data_origin` | Meaning | Source in this repo |
+|---------------|---------|---------------------|
+| `REAL_DATASET` | Posts from established research datasets | **HumAID**, **CrisisMMD** |
+| `LIVE_API` | Posts legally retrieved via an official social-media API | **X API** (optional) |
+| `SYNTHETIC` | Manually written test claims for controlled experiments | project synthetic set |
+
+These are **never mixed without identifying the source.** Synthetic records are
+**not** described as tweets; dataset records are **not** described as live
+tweets; and an extracted location word is **never** reported as a confirmed
+geolocation.
+
+### Loaders
+
+- **HumAID** (`src/humaid_loader.py`, `data_origin = REAL_DATASET`,
+  `dataset_name = HumAID`) reads real tweet text from a locally downloaded
+  HumAID copy and writes `data/processed/humaid_claims.csv` with columns
+  `claim_id, original_text, event, humanitarian_label, data_origin,
+  dataset_name`. The original text, label and event are preserved; only
+  technical normalization is applied (strip a leading `RT @user:` and URLs,
+  collapse whitespace) — the post wording is never rewritten.
+- **CrisisMMD** (`src/crisismmd_loader.py`, `data_origin = REAL_DATASET`,
+  `dataset_name = CrisisMMD`) reads CrisisMMD's annotation TSVs and writes
+  `data/processed/crisismmd_claims.csv`, preserving the post text, event,
+  informative label, humanitarian label, damage severity, and the image
+  reference (path) where available. If the dataset isn't present locally it
+  prints download instructions and exits cleanly.
+- **X API** (`src/x_ingestion.py`, `data_origin = LIVE_API`,
+  `dataset_name = X`) is **optional**. It uses the **official X API v2 only**
+  (never scraping), reads credentials **only** from the `X_BEARER_TOKEN`
+  environment variable, supports configurable queries / `start_time` /
+  `end_time` / `max_results`, and stores `post_id, text, created_at, author_id`
+  (optional), place metadata (only when the API returns a place — coordinates
+  are never assumed), `query_used` and `retrieved_at`. Without credentials it
+  skips gracefully.
+
+### Licensing / what is and isn't committed
+
+- **HumAID**: its terms permit redistributing **tweet IDs only**, not text, so
+  the raw download (`data/raw/`) and the processed `data/processed/*.csv` (which
+  contain real text) are **git-ignored**. Rebuild them locally.
+- **CrisisMMD**: CC-BY-NC-SA 4.0 and subject to platform terms; its processed
+  output is likewise kept out of Git out of caution.
+- **X / LIVE_API**: API content and credentials are never committed.
+- `data/week4_real_vs_synthetic.csv` holds only **aggregate metrics** (no post
+  text), so it **is** tracked.
+
+See each loader's module docstring for exact download steps.
+
+### Real vs synthetic evaluation
+
+`src/week4_real_vs_synthetic.py` → `data/week4_real_vs_synthetic.csv` runs the
+**same** spaCy extractor over synthetic claims and real HumAID posts and reports
+`number_of_posts`, `location_extraction_rate`,
+`exact_or_manual_location_match_rate` (where labels exist),
+`ambiguous_location_rate` and `missing_location_rate`.
+
+**Research question:** *Does geographic entity extraction perform differently on
+realistic noisy social-media language compared with controlled synthetic
+claims?* **Yes, markedly:**
+
+| Data category | Posts | Extraction | Exact / manual match | Ambiguous | Missing |
+|---------------|------:|-----------:|---------------------:|----------:|--------:|
+| `SYNTHETIC` (manual labels) | 100 | 80.0% | 85.0% | 4.0% | 9.0% |
+| `REAL_DATASET` — HumAID (manual labels) | 100 | 64.0% | 52.0% | 4.0% | 29.0% |
+| `REAL_DATASET` — HumAID (unlabelled sample, n=300) | 300 | 47.7% | NA | 5.0% | NA |
+
+The same extractor scores **85% exact on synthetic but only 52% on real** text,
+with **3× the missing rate**. The unlabelled-corpus row has no ground-truth
+locations, so only extraction statistics are reported and the match/missing
+rates are `NA` (no labels are fabricated). Full narrative and worked examples:
+<docs/week4_real_post_error_analysis.md>.
+
+### Running Week 4
+
+```bash
+# REAL_DATASET: build processed real-text corpora from local downloads
+python src/humaid_loader.py        # -> data/processed/humaid_claims.csv (git-ignored)
+python src/crisismmd_loader.py     # -> data/processed/crisismmd_claims.csv (if CrisisMMD present)
+
+# LIVE_API (optional): needs your own X API bearer token
+export X_BEARER_TOKEN=...          # never hardcoded / committed
+python src/x_ingestion.py --max-results 50 --query "California wildfire"
+
+# Real vs synthetic extraction experiment
+python src/week4_real_vs_synthetic.py  # -> data/week4_real_vs_synthetic.csv
+```
+
 ## Dataset
 
 `data/wildfire_claims.csv` contains ~30 **synthetic / demo** wildfire-related
-claims written for this project. They are **not** real social media posts and
-are not assertions about real events. They mix easy geographic cases (e.g.
+claims written for this project (`data_origin = SYNTHETIC`). They are **not**
+real social media posts, are **not** tweets, and are not assertions about real
+events. They mix easy geographic cases (e.g.
 "Malibu, California") with intentionally ambiguous ones (e.g. "near the border",
 "in the mountains") to stress-test the NER and resolution steps.
 
@@ -332,13 +431,18 @@ NASA-Geospatial-Misinformation-Monitor/
     docs/architecture.md
     case_studies/wildfire_case_study.md
     data/                wildfire_claims.csv, week3_location_test.csv (inputs)
-                         + generated CSVs (incl. week3_*.csv)
+                         + generated CSVs (incl. week3_*.csv,
+                         week4_real_vs_synthetic.csv)
+                         data/processed/   real-text corpora (git-ignored)
     src/                 ner, ner_methods, geocode, firms, verify,
                          location_resolution, location_experiment, evidence,
                          sensor_comparison, threshold_experiment,
                          research_metrics, main,
-                         week3_evaluation, week3_end_to_end
-    docs/architecture.md, week3_error_analysis.md
+                         week3_evaluation, week3_end_to_end,
+                         humaid_loader, crisismmd_loader, x_ingestion,
+                         week4_real_vs_synthetic
+    docs/architecture.md, week3_error_analysis.md,
+                         week4_real_post_error_analysis.md
     notebooks/week2_demo.ipynb, week3_location_evaluation.ipynb
 ```
 
