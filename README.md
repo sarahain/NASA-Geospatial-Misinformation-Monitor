@@ -216,9 +216,12 @@ Every record carries a `data_origin` field that is **exactly one** of:
 |---------------|---------|---------------------|
 | `REAL_DATASET` | Posts from established research datasets | **HumAID**, **CrisisMMD** |
 | `LIVE_API` | Posts legally retrieved via an official social-media API | **X API** (optional) |
+| `SCRAPED_IMPORT` | Real tweets from a user-supplied scraper CSV export | `scraped_tweets_loader.py` (optional) |
 | `SYNTHETIC` | Manually written test claims for controlled experiments | project synthetic set |
 
-These are **never mixed without identifying the source.** Synthetic records are
+These are **never mixed without identifying the source.** Scraped data is tagged
+`SCRAPED_IMPORT`, never relabelled as `LIVE_API` — it did not come from the
+official API (see <docs/week4_scraped_tweets.md>). Synthetic records are
 **not** described as tweets; dataset records are **not** described as live
 tweets; and an extracted location word is **never** reported as a confirmed
 geolocation.

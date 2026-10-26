@@ -4,6 +4,7 @@ from pathlib import Path
 
 import crisismmd_loader as cm
 import humaid_loader as hl
+import scraped_tweets_loader as st
 import week4_real_vs_synthetic as w4
 import x_ingestion as xi
 
@@ -177,3 +178,63 @@ def test_week4_evaluate_group_without_labels_reports_na():
     assert m["exact_or_manual_location_match_rate"] == "NA"
     assert m["missing_location_rate"] == "NA"
     assert m["location_extraction_rate"] == 50.0
+
+
+# --- Scraped tweet CSV loader ----------------------------------------------
+def _write_csv(path, header, rows):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        w.writerow(header)
+        w.writerows(rows)
+
+
+def test_scraped_is_disaster_related_keywords():
+    assert st.is_disaster_related("California wildfire forces evacuations") is True
+    assert st.is_disaster_related("Massive flooding in Houston") is True
+    assert st.is_disaster_related("feeling depressed about mondays") is False
+
+
+def test_scraped_load_records_schema_dedup_and_normalize(tmp_path):
+    header = ["Query_Str", "Tweet_Content", "Post_ID", "UTC_Time",
+              "Author_Handle", "Tweet_Image_URL", "Tweet_URL", "Language"]
+    rows = [
+        ["(wildfire)", "RT @x: Evacuations near Malibu https://t.co/z", "1",
+         "2024-01-01 00:00:00+00:00", "user1", "nan", "https://x.com/1", "en"],
+        # duplicate Post_ID -> dropped
+        ["(wildfire)", "Evacuations near Malibu again", "1",
+         "2024-01-01 00:01:00+00:00", "user1", "nan", "https://x.com/1b", "en"],
+        ["(wildfire)", "Just vibing today", "2",
+         "2024-01-01 00:02:00+00:00", "user2", "nan", "https://x.com/2", "en"],
+    ]
+    csv_path = tmp_path / "scrape.csv"
+    _write_csv(csv_path, header, rows)
+
+    records = st.load_records(csv_path=csv_path)
+    assert len(records) == 2  # duplicate id removed
+    r = records[0]
+    assert set(r) == set(st.OUTPUT_FIELDS)
+    assert r["data_origin"] == "SCRAPED_IMPORT"
+    assert r["dataset_name"] == "twitter_advanced_search_scrape"
+    assert r["text"] == "Evacuations near Malibu"  # RT marker + URL stripped
+    assert r["author_handle"] == "user1"
+
+
+def test_scraped_disaster_only_filter(tmp_path):
+    header = ["Tweet_Content", "Post_ID"]
+    rows = [["wildfire near Reno", "1"], ["so depressed lol", "2"]]
+    csv_path = tmp_path / "s.csv"
+    _write_csv(csv_path, header, rows)
+    kept = st.load_records(csv_path=csv_path, disaster_only=True)
+    assert len(kept) == 1 and "wildfire" in kept[0]["text"]
+
+
+def test_scraped_missing_text_column_errors(tmp_path):
+    csv_path = tmp_path / "bad.csv"
+    _write_csv(csv_path, ["foo", "bar"], [["a", "b"]])
+    try:
+        st.load_records(csv_path=csv_path)
+    except SystemExit:
+        pass
+    else:
+        raise AssertionError("expected SystemExit when no text column is present")
