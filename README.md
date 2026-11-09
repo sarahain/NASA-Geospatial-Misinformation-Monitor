@@ -311,6 +311,93 @@ python src/x_ingestion.py --max-results 50 --query "California wildfire"
 python src/week4_real_vs_synthetic.py  # -> data/week4_real_vs_synthetic.csv
 ```
 
+## Week 6 — Satellite Verification of the Annotated X Dataset + Dashboard
+
+The 3,329 posts collected via the official X API (Week 5) were annotated with a
+local LLM (`src/llm_annotate.py` → `data/processed/x_llm_annotated.csv`, git-
+ignored). Week 6 runs every **wildfire-typed** post through a multi-sensor NASA
+FIRMS check and presents everything in a Streamlit research dashboard.
+
+### `src/satellite_verification.py`
+
+For each annotated post:
+
+1. **Location** — `llm_location` is resolved with the Week 3 resolver
+   (Nominatim candidates → contextual ranking → `location_confidence` +
+   `ambiguity_status`). Long strings fall back to simplified queries and the
+   query actually used is recorded (`geocode_query`).
+2. **Time** — `created_at` → UTC timestamp.
+3. **Satellite retrieval** — NASA FIRMS Area API for **both VIIRS and MODIS**,
+   choosing NRT or the Standard-Processing archive from the FIRMS
+   `data_availability` table, over a ±1-day window (`day_range=3`). Responses
+   are cached in `data/processed/firms_cache.json`.
+4. **Matching** — per detection: Haversine distance and signed time offset to
+   the post; a *match* is ≤ 25 km **and** ≤ 48 h.
+5. **Verdict + explanation** — see table. Raw detections (with distance / time
+   offset / matched flag) are stored in `data/processed/satellite_detections.json`
+   for the map.
+
+| Verdict | Meaning |
+|---------|---------|
+| `SUPPORTED` | ≥1 active-fire pixel within 25 km and 48 h. Supports that a fire burned there — **not** every detail of the post. |
+| `NO_NEARBY_DETECTION` | FIRMS returned data for the area/window, nothing matched. **Insufficient evidence, not falsity.** |
+| `NO_SATELLITE_COVERAGE` | Post date outside every FIRMS product's date range. |
+| `API_ERROR` | FIRMS could not be queried (`no_key` / `api_error` / `invalid_response` recorded per sensor). |
+| `LOCATION_UNRESOLVED` | No location, or geocoding failed. |
+| `NOT_APPLICABLE_NON_FIRE` | Floods, hurricanes, etc. — FIRMS only senses thermal anomalies. |
+
+Ambiguous place names (e.g. "Palisades" → candidates in NY, DC, IL, TX) are
+**flagged, not hidden**: the verdict stands but the explanation carries a
+caveat and `data/evaluation/location_quality.csv` reports how many SUPPORTED
+verdicts rest on ambiguous or simplified geocodes.
+
+### `src/research_evaluation.py`
+
+Writes text-free, tracked CSVs to `data/evaluation/` (funnel, verdict counts,
+hazard counts, VIIRS-vs-MODIS comparison, LLM-risk × satellite-verdict
+crosstab, location quality, `summary.json`). Precision / recall / F1 are
+computed **only** when `data/annotations/manual_labels.csv` exists
+(`post_id,human_label,notes`; labels `true_event` / `false_or_misleading` /
+`unclear`). `--make-label-template` writes a stratified sample to label.
+
+### Dashboard (`app.py`)
+
+Pages: Research Overview · Live NASA Fire Map · Claim Explorer (LLM annotation, independent spaCy /
+relevance-filter predictions and NASA evidence shown separately) · Satellite
+Map (claim markers by verdict, real FIRMS pixels, NASA GIBS daily true-colour
+imagery, legend, date / sensor / verdict filters) · Verification Results
+(distance / time histograms, sensor comparison, per-claim explanation, CSV /
+JSON evidence downloads) · Model Evaluation (Week 3 labelled NER results, NLP
+vs satellite, MODIS vs VIIRS, human-label metrics when available, limitations)
+· Case Studies (auto-selected real posts with their actual detections) · Live
+Claim Check (query FIRMS now for any place + date).
+
+### Live data, all satellites, 3D (added)
+
+- **Live NASA Fire Map** page queries FIRMS *now* for any region and window
+  using every NRT product: VIIRS on Suomi-NPP / NOAA-20 / NOAA-21 (375 m),
+  MODIS Terra+Aqua (1 km), **Landsat 8/9 (30 m, US+Canada)** and **GOES-16/18
+  (2 km, every 10 min, Americas)**. 2D dark terrain map (Esri dark canvas +
+  hillshade + landmark labels, or imagery / OpenTopoMap) or a **3D terrain
+  scene** (deck.gl: real elevation tiles, fire columns scaled by FRP, claim
+  points). Per-product overpass timing and FRP charts; CSV download.
+- **Data Sources & Keys** page: paste API keys in the app (saved to the
+  git-ignored `.env`, never displayed), live key / quota check, product
+  availability table from FIRMS, and a "which data is best for what" guide
+  combining sensor specs with this project's measured match rates.
+- **Collected Data** page: the raw X corpus (collection passes, queries,
+  relevance scores, languages, timing) before annotation.
+
+### Running Week 6
+
+```bash
+cp .env.example .env                 # add FIRMS_MAP_KEY=... (free: https://firms.modaps.eosdis.nasa.gov/api/map_key/)
+python src/satellite_verification.py --fire-only   # resumable; ~787 posts, ~25 min
+python src/research_evaluation.py                  # -> data/evaluation/*.csv
+streamlit run app.py                               # -> http://localhost:8501
+python -m pytest -q                                # offline tests (mocked NASA / geocoder)
+```
+
 ## Dataset
 
 `data/wildfire_claims.csv` contains ~30 **synthetic / demo** wildfire-related
@@ -380,13 +467,18 @@ as the dataset grows. They are reported as-is, including a negative result.
 
 ## Limitations
 
-- The claim corpus is synthetic and small.
-- NRT-only FIRMS retrieval; historical dates return nothing without the archive.
+- The original Week 2 claim corpus is synthetic and small; the Week 5/6 X
+  corpus is real but query-driven and English-biased, not a random sample.
 - Geocoding yields a single representative point, not a fire perimeter, and can
-  mis-resolve ambiguous names.
-- Absence of a detection never establishes that a claim is false.
+  mis-resolve ambiguous names (flagged via `ambiguity_status`, not hidden).
+- Absence of a detection never establishes that a claim is false (clouds,
+  small/brief fires, 2–4 overpasses per day, 375 m / 1 km footprints).
+- Satellite support confirms a fire, not a post's other details (cause,
+  acreage, blame); retrospective posts are dated by posting time.
+- No human truth labels exist yet, so no accuracy figure is reported for
+  misinformation detection; the LLM risk flag is a text-only heuristic.
 - The evidence score is a transparent heuristic, not a validated model.
-- PostGIS and LLM-based classification are not yet implemented.
+- PostGIS is not wired into the live pipeline.
 
 ## Future Work
 
@@ -417,7 +509,9 @@ export FIRMS_MAP_KEY=your_key_here
 ```
 
 If `FIRMS_MAP_KEY` is not set, the pipeline still runs the NER and geocoding
-steps and reports FIRMS verification as skipped.
+steps and reports FIRMS verification as skipped. The dashboard and
+`satellite_verification.py` also read it from a git-ignored `.env` file
+(`cp .env.example .env`).
 
 ## Running
 
@@ -438,6 +532,10 @@ The optional PostGIS schema and queries live in `database/`.
 NASA-Geospatial-Misinformation-Monitor/
     README.md
     requirements.txt
+    app.py               Streamlit dashboard entry point
+    dashboard/           data.py (cached loaders), maps.py (folium + GIBS), pages.py
+    data/evaluation/     text-free evaluation CSVs + summary.json (tracked)
+    data/annotations/    manual_labels.csv (post_id + human label, no text)
     config/claim_taxonomy.json
     database/            schema.sql, queries.sql   (optional PostGIS)
     docs/architecture.md
@@ -452,7 +550,9 @@ NASA-Geospatial-Misinformation-Monitor/
                          research_metrics, main,
                          week3_evaluation, week3_end_to_end,
                          humaid_loader, crisismmd_loader, x_ingestion,
-                         week4_real_vs_synthetic
+                         week4_real_vs_synthetic, relevance_filter,
+                         llm_annotate, satellite_verification,
+                         research_evaluation
     docs/architecture.md, week3_error_analysis.md,
                          week4_real_post_error_analysis.md
     notebooks/week2_demo.ipynb, week3_location_evaluation.ipynb

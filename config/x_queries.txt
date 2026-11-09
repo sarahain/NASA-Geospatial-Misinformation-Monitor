@@ -1,0 +1,55 @@
+# X API v2 search queries -- STRICT / budget-protective.
+#
+# Format (one query per line):
+#     hazard_label :: <query expression>
+# The optional "hazard_label ::" prefix is used only for local quality / diversity
+# tracking (it is NOT sent to the API). If omitted, the hazard type is inferred.
+#
+# Lines starting with "#" are comments; blank lines are ignored.
+#
+# !!! BUDGET NOTE !!!
+# You are billed per post the API RETURNS ($0.005 each), BEFORE the local
+# --strict filter runs. So the ONLY way to avoid paying for irrelevant posts is
+# to keep THESE queries tight. Every query below therefore requires a STRONG,
+# unambiguous hazard term AND at least one concrete impact/emergency signal, so
+# figurative junk ("this song is fire") and off-topic chatter are not returned
+# and not billed. Avoid adding broad single-word queries -- they drain credits.
+#
+# src/x_ingestion.py additionally appends (where supported / requested):
+#     lang:en            (English-only; via --lang-en)
+#     -is:retweet        (exclude reposts; on by default)
+#     -from:<account>    (exclude major-media accounts; config/x_exclude_accounts.txt)
+#     exclusion terms    (figurative/sports noise; config/x_exclude_terms.txt)
+#
+# Space between two (groups) means AND. For a 2-year lookback run with
+# --full-archive and set --start-time / --end-time.
+
+# --- Wildfire: strong hazard AND concrete fire-impact/emergency ---
+wildfire :: ("wildfire" OR "forest fire" OR "brush fire" OR "bushfire") ("evacuation order" OR "mandatory evacuation" OR "evacuate" OR "containment" OR "acres burned" OR "homes destroyed" OR "structures destroyed" OR "firefighters" OR "fire crews")
+
+# --- Evacuations: specific evacuation phrasing AND a disaster hazard ---
+evacuation :: ("evacuation order" OR "mandatory evacuation" OR "evacuation warning" OR "evacuation zone" OR "ordered to evacuate") ("wildfire" OR "fire" OR "hurricane" OR "tornado" OR "flood" OR "storm surge")
+
+# --- Tornado: specific warning/impact phrasing (rarely figurative) ---
+tornado :: ("tornado warning" OR "tornado emergency" OR "tornado touched down" OR "tornado on the ground" OR "tornado damage") ("damage" OR "destroyed" OR "injured" OR "shelter" OR "take cover" OR "homes" OR "path")
+
+# --- Hurricane: hazard AND concrete impact (cuts sports/figurative "hurricane") ---
+hurricane :: ("hurricane" OR "tropical storm") ("landfall" OR "storm surge" OR "evacuation" OR "evacuate" OR "making landfall" OR "category 3" OR "category 4" OR "category 5" OR "flooding" OR "damage")
+
+# --- Severe weather: specific warnings AND concrete impact ---
+severe_weather :: ("flash flood warning" OR "flood emergency" OR "storm surge" OR "severe thunderstorm warning" OR "damaging winds" OR "large hail") ("damage" OR "evacuation" OR "flooding" OR "power outage" OR "destroyed" OR "rescue" OR "emergency")
+
+# --- Typhoon / cyclone: hazard AND concrete impact ---
+typhoon :: ("typhoon" OR "super typhoon" OR "cyclone") ("landfall" OR "making landfall" OR "storm surge" OR "evacuation" OR "evacuate" OR "flooding" OR "damage" OR "destroyed" OR "signal no")
+
+# --- Strong flooding: severe flood phrasing AND concrete impact ---
+flood :: ("major flooding" OR "catastrophic flooding" OR "flash flood emergency" OR "record flooding" OR "floodwaters" OR "deadly flooding") ("evacuation" OR "rescue" OR "homes" OR "submerged" OR "destroyed" OR "stranded" OR "damage" OR "washed away")
+
+# --- Mudslide / landslide / debris flow: hazard AND concrete impact ---
+mudslide :: ("mudslide" OR "landslide" OR "debris flow" OR "mudflow") ("homes" OR "buried" OR "evacuation" OR "trapped" OR "damage" OR "road" OR "rescue" OR "destroyed")
+
+# --- Earthquake: hazard AND concrete impact ---
+# NOTE: earthquakes are OUTSIDE this project's environmental taxonomy and are NOT
+# verifiable by NASA FIRMS (fire/thermal). Included at the user's request; treat
+# these records as collected-but-not-satellite-verifiable.
+earthquake :: ("earthquake" OR "quake" OR "aftershock") ("magnitude" OR "epicenter" OR "trapped" OR "collapsed" OR "rubble" OR "rescue" OR "damage" OR "destroyed" OR "tsunami warning")

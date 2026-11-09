@@ -133,12 +133,12 @@ def test_x_ingest_without_token_raises(monkeypatch):
 def test_x_exclude_retweets_and_place_flatten():
     assert xi._default_exclude_retweets("fire") == "(fire) -is:retweet"
     assert xi._default_exclude_retweets("a is:retweet") == "a is:retweet"
-    # Place present but no coordinates -> has_coordinates False (never assumed).
-    name, country, full, has_coords = xi._flatten_place(
+    # Place present but no coordinates -> geo_coordinates empty (never assumed).
+    place_id, coords, full = xi._flatten_place(
         {"geo": {"place_id": "p1"}},
         {"p1": {"name": "Malibu", "country": "United States", "full_name": "Malibu, CA"}},
     )
-    assert (name, country, full, has_coords) == ("Malibu", "United States", "Malibu, CA", False)
+    assert place_id == "p1" and coords == "" and full == "Malibu, CA"
 
 
 def test_x_build_local_query_adds_location_and_radius():

@@ -1,0 +1,4 @@
+sensor,products_used,claims_queried_ok,claims_with_any_detection_in_box,claims_with_matched_detection,match_rate,median_nearest_km,median_abs_hours,median_max_frp_mw,viirs_only_matches,modis_only_matches
+VIIRS,VIIRS_NOAA20_NRT;VIIRS_SNPP_SP,762,469.0,458,0.601,7.23,10.8,28.9,,
+MODIS,MODIS_NRT;MODIS_SP,762,277.0,250,0.328,19.18,12.7,711.6,,
+BOTH_OK,,762,,238,,,,,220.0,12.0

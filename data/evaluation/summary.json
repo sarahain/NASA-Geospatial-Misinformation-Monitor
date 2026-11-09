@@ -1,0 +1,19 @@
+{
+  "annotated_posts": 3329,
+  "wildfire_posts": 787,
+  "date_min": "2025-09-22",
+  "date_max": "2026-11-01",
+  "wildfire_posts_verified": 787,
+  "geocoded": 762,
+  "geocoded_ambiguous": 66,
+  "supported": 470,
+  "supported_unambiguous_location": 446,
+  "no_nearby_detection": 292,
+  "verdicts": {
+    "SUPPORTED": 470,
+    "NO_NEARBY_DETECTION": 292,
+    "LOCATION_UNRESOLVED": 25
+  },
+  "median_nearest_km_supported": 6.54,
+  "label_metrics": "no human labels yet (data/annotations/manual_labels.csv)"
+}

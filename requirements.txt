@@ -6,6 +6,14 @@ jupyter
 matplotlib
 pytest
 openpyxl  # read .xlsx curated tweet-reference spreadsheets (wildfire_tweet_refs_loader)
+python-dotenv  # loads .env (FIRMS_MAP_KEY etc.) for the dashboard / scripts
+
+# Dashboard (app.py) + evaluation
+streamlit
+plotly
+folium
+streamlit-folium
+scikit-learn
 
 # Optional (Week 3 Method B: transformer NER, dslim/bert-base-NER).
 # The project runs fine without these; the evaluation records that Method B is

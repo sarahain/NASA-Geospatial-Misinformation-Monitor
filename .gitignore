@@ -6,8 +6,24 @@ env/
 .ipynb_checkpoints/
 
 .env
+.env.*
+!.env.example
 *.key
 firms_key.txt
+
+# Secrets / credentials directories (never committed).
+secrets/
+credentials/
+
+# Logs (may reference queries/endpoints; never credentials, but kept out of Git).
+logs/
+
+# Week 5 X collection: review sample contains REAL post text -> never committed.
+# (Aggregate summaries data/week5_x_collection_summary.csv,
+#  data/week5_x_nasa_ready_summary.csv, data/week5_relevance_metrics.csv hold NO
+#  text and ARE tracked. The raw/relevant/candidate/checkpoint files live under
+#  data/processed/ which is already git-ignored.)
+data/week5_relevance_review_sample.csv
 
 data/ner_results.csv
 data/verification_results.csv
@@ -27,6 +43,14 @@ data/raw/
 # src/humaid_loader.py, src/crisismmd_loader.py, src/x_ingestion.py.
 # (data/week4_real_vs_synthetic.csv holds only aggregate metrics and IS tracked.)
 data/processed/
+# Local backup copies of the processed folder (also contain real post text).
+data/processed copy/
+data/processed copy.zip
+
+# Week 6 outputs: data/evaluation/ (text-free aggregates) and
+# data/annotations/manual_labels.csv (post_id + label only) ARE tracked.
+# Streamlit local config / secrets are not.
+.streamlit/secrets.toml
 
 # Hydrated real test set (tweet ids + the real tweet TEXT). Rebuilt locally by
 # src/week3_build_dataset.py from data/raw. Text must not be committed; only the

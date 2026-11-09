@@ -1,0 +1,12 @@
+stage,posts
+Annotated posts,3329
+LLM: asserts a hazard event,3102
+LLM: any location extracted,3286
+Wildfire-typed posts (FIRMS-checkable),787
+Wildfire posts with a location string,787
+Wildfire posts processed by verifier,787
+Geocoded to coordinates,762
+FIRMS queried with coverage (>=1 sensor ok),762
+Any detection in the 0.5 deg box (+/-1 day),480
+Detection within 25 km and 48 h (SUPPORTED),470
+SUPPORTED with an unambiguous geocode,446

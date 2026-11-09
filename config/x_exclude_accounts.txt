@@ -1,0 +1,29 @@
+# Accounts to exclude from X search results via the -from:<username> operator.
+#
+# Each non-comment, non-blank line is ONE account username (the part after "@";
+# a leading "@" is stripped automatically). src/x_ingestion.py appends these as
+# -from:<username> to every query, so posts authored BY these accounts are
+# dropped. This biases collection AWAY from major national-media coverage toward
+# on-the-ground / local / eyewitness posts.
+#
+# Lines starting with "#" are comments. Keep this list focused -- each account
+# costs query length, and recent-search queries are length-capped (older archive
+# search allows longer queries). Edit freely to add/remove outlets.
+
+# --- Major US national TV/cable news ---
+FoxNews
+FoxNewsAlert
+CNN
+cnnbrk
+MSNBC
+ABC
+CBSNews
+NBCNews
+nytimes
+washingtonpost
+
+# --- Wire services / international ---
+Reuters
+AP
+BBCWorld
+BBCBreaking

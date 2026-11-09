@@ -1,0 +1,27 @@
+# INTERNATIONAL (non-English) X queries -- small, bounded pass.
+#
+# Used ONLY for the optional ~100-tweet international slice. Run this file with a
+# SEPARATE command that does NOT pass --lang-en and uses a small --target /
+# --candidate-limit so it stays tiny and does not touch the main English budget.
+#
+# Same strict pattern as the English queries: strong hazard term AND concrete
+# impact/emergency, so figurative/off-topic posts are not returned or billed.
+# Languages: Spanish (es), Portuguese (pt), French (fr), Tagalog (tl),
+# Indonesian/Malay (id) -- the highest-volume disaster languages.
+#
+# The account/figurative exclusions in config/x_exclude_*.txt still apply.
+
+# --- Spanish: hazard AND impact/emergency ---
+es :: ("incendio forestal" OR "inundación" OR "inundaciones" OR "huracán" OR "terremoto" OR "tifón" OR "deslizamiento") ("evacuación" OR "evacuados" OR "rescate" OR "destruido" OR "destruidas" OR "muertos" OR "casas" OR "daños")
+
+# --- Portuguese: hazard AND impact/emergency ---
+pt :: ("incêndio" OR "inundação" OR "enchente" OR "furacão" OR "ciclone" OR "deslizamento") ("evacuação" OR "resgate" OR "mortos" OR "feridos" OR "destruídas" OR "casas" OR "desaparecidos")
+
+# --- French: hazard AND impact/emergency ---
+fr :: ("incendie" OR "inondation" OR "ouragan" OR "séisme" OR "tornade" OR "typhon" OR "glissement de terrain") ("évacuation" OR "évacués" OR "sauvetage" OR "morts" OR "blessés" OR "détruites" OR "maisons")
+
+# --- Tagalog (Philippines): hazard AND impact/emergency ---
+tl :: ("bagyo" OR "baha" OR "lindol" OR "sunog") ("paglikas" OR "sagip" OR "patay" OR "sugatan" OR "nasira" OR "bahay")
+
+# --- Indonesian / Malay: hazard AND impact/emergency ---
+id :: ("kebakaran" OR "banjir" OR "gempa" OR "topan" OR "tanah longsor") ("evakuasi" OR "mengungsi" OR "korban" OR "tewas" OR "rumah" OR "hancur")

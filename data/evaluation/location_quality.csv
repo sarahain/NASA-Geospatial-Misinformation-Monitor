@@ -1,0 +1,7 @@
+ambiguity_status,geocode_mode,LOCATION_UNRESOLVED,NO_NEARBY_DETECTION,SUPPORTED,total
+ambiguous,full_string,0,42,23,65
+ambiguous,simplified_query,0,0,1,1
+resolved,full_string,0,225,413,638
+resolved,simplified_query,0,25,33,58
+unresolved,not_geocoded,25,0,0,25
+total,,25,292,470,787
